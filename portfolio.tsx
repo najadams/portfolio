@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Github, Linkedin, Mail, ExternalLink, Code, Database, Globe, Smartphone } from "lucide-react"
@@ -9,6 +9,9 @@ import Link from "next/link"
 export default function Portfolio() {
   const [isVisible, setIsVisible] = useState(false)
   const [activeSection, setActiveSection] = useState("home")
+  const [scrollY, setScrollY] = useState(0)
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const lightTrailRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     setIsVisible(true)
@@ -16,6 +19,7 @@ export default function Portfolio() {
     const handleScroll = () => {
       const sections = ["home", "about", "skills", "projects", "contact"]
       const scrollPosition = window.scrollY + 100
+      setScrollY(window.scrollY)
 
       for (const section of sections) {
         const element = document.getElementById(section)
@@ -29,10 +33,29 @@ export default function Portfolio() {
           }
         }
       }
+
+      // Update light trail position
+      if (lightTrailRef.current) {
+        const progress = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)
+        const amplitude = 100
+        const frequency = 0.01
+        const x = Math.sin(progress * Math.PI * 8) * amplitude + window.innerWidth / 2
+        const y = progress * (document.documentElement.scrollHeight - 100)
+        
+        lightTrailRef.current.style.transform = `translate(${x}px, ${y}px)`
+      }
+    }
+
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({ x: e.clientX, y: e.clientY })
     }
 
     window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
+    window.addEventListener("mousemove", handleMouseMove)
+    return () => {
+      window.removeEventListener("scroll", handleScroll)
+      window.removeEventListener("mousemove", handleMouseMove)
+    }
   }, [])
 
   const scrollToSection = (sectionId: string) => {
@@ -51,42 +74,105 @@ export default function Portfolio() {
 
   const projects = [
     {
-      title: "E-Commerce Platform",
-      description: "Full-stack e-commerce solution with React, Node.js, and PostgreSQL",
-      tech: ["React", "Node.js", "PostgreSQL", "Stripe"],
-      github: "#",
-      live: "#",
+      title: "Full-Stack E-commerce Platform",
+      description: "Comprehensive e-commerce solution with user authentication, payment processing, and admin dashboard",
+      tech: ["React", "Node.js", "MongoDB", "Stripe", "JWT"],
+      github: "https://github.com/najadams/ecommerce-platform",
+      live: "https://najadams-ecommerce.vercel.app",
     },
     {
-      title: "Task Management App",
-      description: "Collaborative task management with real-time updates",
-      tech: ["Next.js", "Socket.io", "MongoDB", "Tailwind"],
-      github: "#",
-      live: "#",
+      title: "Real-time Chat Application",
+      description: "Modern chat application with real-time messaging, file sharing, and group chat functionality",
+      tech: ["React", "Socket.io", "Express", "MongoDB", "Cloudinary"],
+      github: "https://github.com/najadams/chat-app",
+      live: "https://najadams-chat.vercel.app",
     },
     {
-      title: "AI Chat Interface",
-      description: "Modern chat interface with AI integration and voice support",
-      tech: ["React", "OpenAI API", "WebRTC", "Firebase"],
-      github: "#",
-      live: "#",
+      title: "Task Management Dashboard",
+      description: "Collaborative project management tool with drag-and-drop functionality and team collaboration features",
+      tech: ["Next.js", "TypeScript", "Prisma", "PostgreSQL", "Tailwind CSS"],
+      github: "https://github.com/najadams/task-manager",
+      live: "https://najadams-tasks.vercel.app",
+    },
+    {
+      title: "Weather Analytics Dashboard",
+      description: "Comprehensive weather dashboard with historical data, forecasts, and interactive charts",
+      tech: ["React", "Chart.js", "OpenWeather API", "Material-UI"],
+      github: "https://github.com/najadams/weather-dashboard",
+      live: "https://najadams-weather.vercel.app",
+    },
+    {
+      title: "Portfolio Website",
+      description: "Responsive portfolio website showcasing projects and skills with modern design and animations",
+      tech: ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion"],
+      github: "https://github.com/najadams/portfolio",
+      live: "https://najadams.dev",
+    },
+    {
+      title: "Blog Platform",
+      description: "Full-featured blog platform with markdown support, comments, and content management system",
+      tech: ["Next.js", "MDX", "Sanity CMS", "Vercel"],
+      github: "https://github.com/najadams/blog-platform",
+      live: "https://najadams-blog.vercel.app",
     },
   ]
 
   return (
-    <div className="min-h-screen bg-white text-gray-900">
+    <div className="min-h-screen bg-white text-gray-900 relative overflow-hidden">
+      {/* Animated Background Elements */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        {/* Floating Particles */}
+         {[...Array(20)].map((_, i) => (
+           <div
+             key={i}
+             className="absolute w-2 h-2 bg-blue-400 rounded-full opacity-20 animate-pulse"
+             style={{
+               left: `${(i * 5) % 100}%`,
+               top: `${(i * 7) % 100}%`,
+               animationDelay: `${(i * 0.15) % 3}s`,
+               animationDuration: `${3 + (i % 3)}s`,
+             }}
+           />
+         ))}
+        
+        {/* Wavy Light Trail */}
+        <div
+          ref={lightTrailRef}
+          className="absolute w-4 h-4 pointer-events-none transition-transform duration-100 ease-out"
+          style={{
+            background: 'radial-gradient(circle, rgba(59, 130, 246, 0.8) 0%, rgba(59, 130, 246, 0.4) 30%, transparent 70%)',
+            filter: 'blur(2px)',
+            boxShadow: '0 0 20px rgba(59, 130, 246, 0.6), 0 0 40px rgba(59, 130, 246, 0.4)',
+          }}
+        />
+        
+        {/* Mouse Follower */}
+        <div
+          className="absolute w-6 h-6 pointer-events-none transition-transform duration-300 ease-out"
+          style={{
+            left: mousePosition.x - 12,
+            top: mousePosition.y - 12,
+            background: 'radial-gradient(circle, rgba(147, 51, 234, 0.3) 0%, transparent 70%)',
+            filter: 'blur(1px)',
+          }}
+        />
+        
+        {/* Gradient Orbs */}
+         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl animate-pulse" />
+         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+      </div>
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 transition-all duration-300 hover:bg-white/90">
         <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
-            <div className="text-xl font-bold">Alex Chen</div>
+            <div className="text-xl font-bold text-blue-600">Najm Adams</div>
             <div className="hidden md:flex space-x-8">
               {["home", "about", "skills", "projects", "contact"].map((section) => (
                 <button
                   key={section}
                   onClick={() => scrollToSection(section)}
-                  className={`capitalize transition-colors duration-300 ${
-                    activeSection === section ? "text-blue-600 font-medium" : "text-gray-600 hover:text-gray-900"
+                  className={`capitalize transition-all duration-300 hover:scale-110 ${
+                    activeSection === section ? "text-blue-600 font-medium transform scale-110" : "text-gray-600 hover:text-gray-900"
                   }`}
                 >
                   {section}
@@ -98,29 +184,36 @@ export default function Portfolio() {
       </nav>
 
       {/* Hero Section */}
-      <section id="home" className="min-h-screen flex items-center justify-center px-6">
+      <section id="home" className="min-h-screen flex items-center justify-center px-6 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
           <div
             className={`transition-all duration-1000 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
           >
             <h1 className="text-5xl md:text-7xl font-light mb-6 leading-tight">
-              Software
+              <span className="inline-block animate-bounce" style={{ animationDelay: '0.1s' }}>S</span>
+              <span className="inline-block animate-bounce" style={{ animationDelay: '0.2s' }}>o</span>
+              <span className="inline-block animate-bounce" style={{ animationDelay: '0.3s' }}>f</span>
+              <span className="inline-block animate-bounce" style={{ animationDelay: '0.4s' }}>t</span>
+              <span className="inline-block animate-bounce" style={{ animationDelay: '0.5s' }}>w</span>
+              <span className="inline-block animate-bounce" style={{ animationDelay: '0.6s' }}>a</span>
+              <span className="inline-block animate-bounce" style={{ animationDelay: '0.7s' }}>r</span>
+              <span className="inline-block animate-bounce" style={{ animationDelay: '0.8s' }}>e</span>
               <span className="block text-blue-600 font-medium">Developer</span>
             </h1>
-            <p className="text-xl md:text-2xl text-gray-600 mb-12 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-xl md:text-2xl text-gray-600 mb-12 max-w-2xl mx-auto leading-relaxed animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
               Crafting digital experiences with clean code and innovative solutions
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up" style={{ animationDelay: '0.8s' }}>
               <Button
                 onClick={() => scrollToSection("projects")}
-                className="px-8 py-3 text-lg bg-blue-600 hover:bg-blue-700 transition-all duration-300 transform hover:scale-105"
+                className="px-8 py-3 text-lg bg-blue-600 hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-blue-500/25"
               >
                 View My Work
               </Button>
               <Button
                 variant="outline"
                 onClick={() => scrollToSection("contact")}
-                className="px-8 py-3 text-lg border-2 hover:bg-gray-50 transition-all duration-300"
+                className="px-8 py-3 text-lg border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
               >
                 Get In Touch
               </Button>
@@ -130,44 +223,44 @@ export default function Portfolio() {
       </section>
 
       {/* About Section */}
-      <section id="about" className="py-24 px-6 bg-gray-50">
+      <section id="about" className="py-24 px-6 bg-gray-50 relative z-10">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-light mb-6">About Me</h2>
-            <div className="w-20 h-1 bg-blue-600 mx-auto"></div>
+            <h2 className="text-4xl md:text-5xl font-light mb-6 animate-fade-in-up">About Me</h2>
+            <div className="w-20 h-1 bg-blue-600 mx-auto animate-expand"></div>
           </div>
           <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="space-y-6">
+            <div className="space-y-6 animate-fade-in-left">
               <p className="text-lg text-gray-700 leading-relaxed">
-                I'm a passionate software developer with over 5 years of experience building scalable web applications
-                and mobile solutions. I specialize in modern JavaScript frameworks and cloud technologies.
+                I'm a passionate full-stack developer with expertise in building modern web applications and scalable solutions. 
+                I specialize in React, Next.js, Node.js, and cloud technologies, with a focus on creating exceptional user experiences.
               </p>
               <p className="text-lg text-gray-700 leading-relaxed">
-                When I'm not coding, you'll find me exploring new technologies, contributing to open source projects, or
-                sharing knowledge through technical writing and mentoring.
+                When I'm not coding, you'll find me exploring new technologies, contributing to open source projects, and 
+                continuously learning to stay at the forefront of web development trends and best practices.
               </p>
               <div className="flex space-x-4 pt-4">
                 <Link
-                  href="#"
+                  href="https://github.com/najadams"
                   className="p-3 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-110"
                 >
                   <Github className="w-6 h-6 text-gray-700" />
                 </Link>
                 <Link
-                  href="#"
+                  href="https://www.linkedin.com/in/najm-lambon-a11480234/"
                   className="p-3 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-110"
                 >
                   <Linkedin className="w-6 h-6 text-gray-700" />
                 </Link>
                 <Link
-                  href="#"
+                  href="mailto:najmadams1706@gmail.com"
                   className="p-3 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-110"
                 >
                   <Mail className="w-6 h-6 text-gray-700" />
                 </Link>
               </div>
             </div>
-            <div className="relative">
+            <div className="relative animate-fade-in-right">
               <div className="w-80 h-80 mx-auto bg-gradient-to-br from-blue-400 to-purple-600 rounded-full opacity-20 absolute -top-4 -left-4"></div>
               <div className="w-80 h-80 mx-auto bg-gray-200 rounded-full relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-purple-600 opacity-10"></div>
@@ -178,28 +271,29 @@ export default function Portfolio() {
       </section>
 
       {/* Skills Section */}
-      <section id="skills" className="py-24 px-6">
+      <section id="skills" className="py-24 px-6 relative z-10">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-light mb-6">Skills & Expertise</h2>
-            <div className="w-20 h-1 bg-blue-600 mx-auto"></div>
+            <h2 className="text-4xl md:text-5xl font-light mb-6 animate-fade-in-up">Skills & Expertise</h2>
+            <div className="w-20 h-1 bg-blue-600 mx-auto animate-expand"></div>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {skills.map((skill, index) => (
               <Card
                 key={skill.name}
-                className="group hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2"
+                className="group hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 hover:rotate-1 animate-fade-in-up"
+                style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <CardContent className="p-8 text-center">
                   <div className="mb-6 relative">
-                    <div className="w-16 h-16 mx-auto bg-blue-100 rounded-full flex items-center justify-center group-hover:bg-blue-600 transition-colors duration-300">
+                    <div className="w-16 h-16 mx-auto bg-blue-100 rounded-full flex items-center justify-center group-hover:bg-blue-600 transition-all duration-300 group-hover:scale-110 group-hover:rotate-12">
                       <skill.icon className="w-8 h-8 text-blue-600 group-hover:text-white transition-colors duration-300" />
                     </div>
                   </div>
                   <h3 className="text-xl font-medium mb-4">{skill.name}</h3>
                   <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
                     <div
-                      className="bg-blue-600 h-2 rounded-full transition-all duration-1000 ease-out"
+                      className="bg-blue-600 h-2 rounded-full transition-all duration-1000 ease-out animate-progress"
                       style={{
                         width: `${skill.level}%`,
                         animationDelay: `${index * 200}ms`,
@@ -215,19 +309,20 @@ export default function Portfolio() {
       </section>
 
       {/* Projects Section */}
-      <section id="projects" className="py-24 px-6 bg-gray-50">
+      <section id="projects" className="py-24 px-6 bg-gray-50 relative z-10">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-light mb-6">Featured Projects</h2>
-            <div className="w-20 h-1 bg-blue-600 mx-auto"></div>
+            <h2 className="text-4xl md:text-5xl font-light mb-6 animate-fade-in-up">Featured Projects</h2>
+            <div className="w-20 h-1 bg-blue-600 mx-auto animate-expand"></div>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {projects.map((project, index) => (
               <Card
                 key={project.title}
-                className="group hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-4 overflow-hidden"
+                className="group hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-4 hover:rotate-1 overflow-hidden animate-fade-in-up"
+                style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <div className="h-48 bg-gradient-to-br from-blue-400 to-purple-600 relative overflow-hidden">
+                <div className="h-48 bg-gradient-to-br from-blue-400 to-blue-600 relative overflow-hidden group-hover:scale-105 transition-transform duration-500">
                   <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-300"></div>
                   <div className="absolute bottom-4 left-4 right-4">
                     <div className="flex space-x-2">
@@ -264,22 +359,33 @@ export default function Portfolio() {
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="py-24 px-6">
+      <section id="contact" className="py-24 px-6 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl md:text-5xl font-light mb-6">Let's Work Together</h2>
-          <div className="w-20 h-1 bg-blue-600 mx-auto mb-12"></div>
-          <p className="text-xl text-gray-600 mb-12 max-w-2xl mx-auto leading-relaxed">
+          <h2 className="text-4xl md:text-5xl font-light mb-6 animate-fade-in-up">Let's Work Together</h2>
+          <div className="w-20 h-1 bg-blue-600 mx-auto mb-12 animate-expand"></div>
+          <p className="text-xl text-gray-600 mb-12 max-w-2xl mx-auto leading-relaxed animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
             I'm always interested in new opportunities and exciting projects. Let's discuss how we can bring your ideas
             to life.
           </p>
-          <div className="flex flex-col sm:flex-row gap-6 justify-center">
-            <Button className="px-8 py-4 text-lg bg-blue-600 hover:bg-blue-700 transition-all duration-300 transform hover:scale-105">
+          <div className="flex flex-col sm:flex-row gap-6 justify-center animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+            <Button 
+              className="px-8 py-4 text-lg bg-blue-600 hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-blue-500/25"
+              onClick={() => window.open('mailto:najmadams1706@gmail.com', '_blank')}
+            >
               <Mail className="w-5 h-5 mr-2" />
               Send Email
             </Button>
             <Button
               variant="outline"
-              className="px-8 py-4 text-lg border-2 hover:bg-gray-50 transition-all duration-300 bg-transparent"
+              className="px-8 py-4 text-lg border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white transition-all duration-300 transform hover:scale-105 hover:shadow-lg bg-transparent"
+              onClick={() => {
+                const link = document.createElement('a');
+                link.href = '/NajmAdamsResume.pdf';
+                link.download = 'NajmAdamsResume.pdf';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+              }}
             >
               Download Resume
             </Button>
@@ -290,7 +396,7 @@ export default function Portfolio() {
       {/* Footer */}
       <footer className="py-12 px-6 bg-gray-900 text-white">
         <div className="max-w-6xl mx-auto text-center">
-          <p className="text-gray-400">© {new Date().getFullYear()} Alex Chen. Crafted with passion and precision.</p>
+          <p className="text-gray-400">© {new Date().getFullYear()} Najm Adams. Crafted with passion and precision.</p>
         </div>
       </footer>
     </div>
