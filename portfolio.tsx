@@ -99,35 +99,20 @@ export default function Portfolio() {
 
   const projects = [
     {
+      title:
+        "A simple donations platform flavoured with the arts of the blessed orphans",
+      description: "Modern UI used for donation hub.",
+      tech: ["React", "stripe", "formik", "chakra ui", "Cloudinary"],
+      github: "https://github.com/najadams/chat-app",
+      live: "https://najsdonation.netlify.app",
+    },
+    {
       title: "Full-Stack POS Platform",
       description:
         "Comprehensive e-commerce solution with user authentication, payment processing, and admin dashboard",
       tech: ["React", "Node.js", "MongoDB", "JWT"],
       github: "https://github.com/najadams/sophon.git",
       live: "https://mannos.netlify.app",
-    },
-    {
-      title: "Real-time Chat Application",
-      description:
-        "Modern mobile app chat application for a school with real-time messaging, file sharing functionality",
-      tech: ["React", "Socket.io", "Express", "MongoDB", "Cloudinary"],
-      github: "https://github.com/najadams/chat-app",
-      live: "https://najadams-chat.vercel.app",
-    },
-    {
-      title: "AI Integrated mobile health assistant",
-      description:
-        "Ai integrated mental health assistant with up to date resources. Impeccable at keeping track of patient health",
-      tech: ["React Native", "Javascript", "mongoDB", "Tailwind CSS"],
-      github: "https://github.com/najadams/healthMapp.git",
-    },
-    {
-      title: "Weather Analytics Dashboard",
-      description:
-        "Comprehensive weather dashboard with historical data, forecasts, and interactive charts",
-      tech: ["React", "Chart.js", "OpenWeather API", "Material-UI"],
-      github: "https://github.com/najadams/weather-dashboard",
-      live: "https://najadams-weather.vercel.app",
     },
     {
       title: "Portfolio Website",
@@ -140,9 +125,23 @@ export default function Portfolio() {
     {
       title: "AI enhanced Audio Steganography",
       description:
-        "A collaborative work on reinforcement learning. Functional audio ai audio steganography and steganalysis tool. Mainly focussing on imperceptiblity of processed data",
+        "A collaborative work on reinforcement learning. Functional audio ai audio steganography and steganalysis tool.",
       tech: ["React.js", "TypeScript", " Python", "Gymnasium PPO Agent"],
       github: "https://github.com/najadams/blog-platform",
+    },
+    {
+      title: "Offline first POS applicaiton",
+      description:
+        "A comprehensive pos application, effortlessly seamless with the working environment of wholesalers and distributers. Precise inventory tracking. Apt use of sms for CRM",
+      tech: ["React", "Chart.js", "Electron", "Material-UI"],
+      github: "https://github.com/najadams/pos",
+    },
+    {
+      title: "AI Integrated mobile health assistant",
+      description:
+        "Ai integrated mental health assistant with up to date resources. Impeccable at keeping track of patient health",
+      tech: ["React Native", "Javascript", "mongoDB", "Tailwind CSS"],
+      github: "https://github.com/najadams/healthMapp.git",
     },
   ];
 
@@ -151,44 +150,50 @@ export default function Portfolio() {
       {/* Animated Background Elements */}
       <div className="fixed inset-0 pointer-events-none z-0">
         {/* Floating Particles */}
-         {[...Array(20)].map((_, i) => (
-           <div
-             key={i}
-             className="absolute w-2 h-2 bg-blue-400 rounded-full opacity-20 animate-pulse"
-             style={{
-               left: `${(i * 5) % 100}%`,
-               top: `${(i * 7) % 100}%`,
-               animationDelay: `${(i * 0.15) % 3}s`,
-               animationDuration: `${3 + (i % 3)}s`,
-             }}
-           />
-         ))}
-        
+        {[...Array(20)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute w-2 h-2 bg-blue-400 rounded-full opacity-20 animate-pulse"
+            style={{
+              left: `${(i * 5) % 100}%`,
+              top: `${(i * 7) % 100}%`,
+              animationDelay: `${(i * 0.15) % 3}s`,
+              animationDuration: `${3 + (i % 3)}s`,
+            }}
+          />
+        ))}
+
         {/* Wavy Light Trail */}
         <div
           ref={lightTrailRef}
           className="absolute w-4 h-4 pointer-events-none transition-transform duration-100 ease-out"
           style={{
-            background: 'radial-gradient(circle, rgba(59, 130, 246, 0.8) 0%, rgba(59, 130, 246, 0.4) 30%, transparent 70%)',
-            filter: 'blur(2px)',
-            boxShadow: '0 0 20px rgba(59, 130, 246, 0.6), 0 0 40px rgba(59, 130, 246, 0.4)',
+            background:
+              "radial-gradient(circle, rgba(59, 130, 246, 0.8) 0%, rgba(59, 130, 246, 0.4) 30%, transparent 70%)",
+            filter: "blur(2px)",
+            boxShadow:
+              "0 0 20px rgba(59, 130, 246, 0.6), 0 0 40px rgba(59, 130, 246, 0.4)",
           }}
         />
-        
+
         {/* Mouse Follower */}
         <div
           className="absolute w-6 h-6 pointer-events-none transition-transform duration-300 ease-out"
           style={{
             left: mousePosition.x - 12,
             top: mousePosition.y - 12,
-            background: 'radial-gradient(circle, rgba(147, 51, 234, 0.3) 0%, transparent 70%)',
-            filter: 'blur(1px)',
+            background:
+              "radial-gradient(circle, rgba(147, 51, 234, 0.3) 0%, transparent 70%)",
+            filter: "blur(1px)",
           }}
         />
-        
+
         {/* Gradient Orbs */}
-         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl animate-pulse" />
-         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl animate-pulse" />
+        <div
+          className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse"
+          style={{ animationDelay: "1s" }}
+        />
       </div>
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 transition-all duration-300 hover:bg-white/90">
@@ -196,54 +201,97 @@ export default function Portfolio() {
           <div className="flex justify-between items-center">
             <div className="text-xl font-bold text-blue-600">Najm Adams</div>
             <div className="hidden md:flex space-x-8">
-              {["home", "about", "skills", "projects", "contact"].map((section) => (
-                <button
-                  key={section}
-                  onClick={() => scrollToSection(section)}
-                  className={`capitalize transition-all duration-300 hover:scale-110 ${
-                    activeSection === section ? "text-blue-600 font-medium transform scale-110" : "text-gray-600 hover:text-gray-900"
-                  }`}
-                >
-                  {section}
-                </button>
-              ))}
+              {["home", "about", "skills", "projects", "contact"].map(
+                (section) => (
+                  <button
+                    key={section}
+                    onClick={() => scrollToSection(section)}
+                    className={`capitalize transition-all duration-300 hover:scale-110 ${
+                      activeSection === section
+                        ? "text-blue-600 font-medium transform scale-110"
+                        : "text-gray-600 hover:text-gray-900"
+                    }`}>
+                    {section}
+                  </button>
+                )
+              )}
             </div>
           </div>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section id="home" className="min-h-screen flex items-center justify-center px-6 relative z-10">
+      <section
+        id="home"
+        className="min-h-screen flex items-center justify-center px-6 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
           <div
-            className={`transition-all duration-1000 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
-          >
+            className={`transition-all duration-1000 ${
+              isVisible
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-10"
+            }`}>
             <h1 className="text-5xl md:text-7xl font-light mb-6 leading-tight">
-              <span className="inline-block animate-bounce" style={{ animationDelay: '0.1s' }}>S</span>
-              <span className="inline-block animate-bounce" style={{ animationDelay: '0.2s' }}>o</span>
-              <span className="inline-block animate-bounce" style={{ animationDelay: '0.3s' }}>f</span>
-              <span className="inline-block animate-bounce" style={{ animationDelay: '0.4s' }}>t</span>
-              <span className="inline-block animate-bounce" style={{ animationDelay: '0.5s' }}>w</span>
-              <span className="inline-block animate-bounce" style={{ animationDelay: '0.6s' }}>a</span>
-              <span className="inline-block animate-bounce" style={{ animationDelay: '0.7s' }}>r</span>
-              <span className="inline-block animate-bounce" style={{ animationDelay: '0.8s' }}>e</span>
+              <span
+                className="inline-block animate-bounce"
+                style={{ animationDelay: "0.1s" }}>
+                S
+              </span>
+              <span
+                className="inline-block animate-bounce"
+                style={{ animationDelay: "0.2s" }}>
+                o
+              </span>
+              <span
+                className="inline-block animate-bounce"
+                style={{ animationDelay: "0.3s" }}>
+                f
+              </span>
+              <span
+                className="inline-block animate-bounce"
+                style={{ animationDelay: "0.4s" }}>
+                t
+              </span>
+              <span
+                className="inline-block animate-bounce"
+                style={{ animationDelay: "0.5s" }}>
+                w
+              </span>
+              <span
+                className="inline-block animate-bounce"
+                style={{ animationDelay: "0.6s" }}>
+                a
+              </span>
+              <span
+                className="inline-block animate-bounce"
+                style={{ animationDelay: "0.7s" }}>
+                r
+              </span>
+              <span
+                className="inline-block animate-bounce"
+                style={{ animationDelay: "0.8s" }}>
+                e
+              </span>
               <span className="block text-blue-600 font-medium">Developer</span>
             </h1>
-            <p className="text-xl md:text-2xl text-gray-600 mb-12 max-w-2xl mx-auto leading-relaxed animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
-              Crafting digital experiences with clean code and innovative solutions
+            <p
+              className="text-xl md:text-2xl text-gray-600 mb-12 max-w-2xl mx-auto leading-relaxed animate-fade-in-up"
+              style={{ animationDelay: "0.5s" }}>
+              Crafting digital experiences with clean code and innovative
+              solutions
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up" style={{ animationDelay: '0.8s' }}>
+            <div
+              className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up"
+              style={{ animationDelay: "0.8s" }}>
               <Button
                 onClick={() => scrollToSection("projects")}
-                className="px-8 py-3 text-lg bg-blue-600 hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-blue-500/25"
-              >
+                className="px-8 py-3 text-lg bg-blue-600 hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-blue-500/25">
                 View My Work
               </Button>
               <Button
                 variant="outline"
                 onClick={() => scrollToSection("contact")}
-                className="px-8 py-3 text-lg border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
-              >
+                className="px-8 py-3 text-lg border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
                 Get In Touch
               </Button>
             </div>
@@ -252,43 +300,53 @@ export default function Portfolio() {
       </section>
 
       {/* About Section */}
-      <section id="about" className="py-24 px-6 bg-gray-50 relative z-10" data-animate>
+      <section
+        id="about"
+        className="py-24 px-6 bg-gray-50 relative z-10"
+        data-animate>
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className={`text-4xl md:text-5xl font-light mb-6 transition-all duration-1000 ${
-              visibleElements.has('about') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-            }`}>About Me</h2>
-            <div className={`w-20 h-1 bg-blue-600 mx-auto transition-all duration-1000 delay-300 ${
-              visibleElements.has('about') ? 'w-20' : 'w-0'
-            }`}></div>
+            <h2
+              className={`text-4xl md:text-5xl font-light mb-6 transition-all duration-1000 ${
+                visibleElements.has("about")
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-10"
+              }`}>
+              About Me
+            </h2>
+            <div
+              className={`w-20 h-1 bg-blue-600 mx-auto transition-all duration-1000 delay-300 ${
+                visibleElements.has("about") ? "w-20" : "w-0"
+              }`}></div>
           </div>
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="space-y-6 animate-fade-in-left">
               <p className="text-lg text-gray-700 leading-relaxed">
-                I'm a passionate full-stack developer with expertise in building modern web applications and scalable solutions. 
-                I specialize in React, Next.js, Node.js, and cloud technologies, with a focus on creating exceptional user experiences.
+                I'm a passionate full-stack developer with expertise in building
+                modern web applications and scalable solutions. I specialize in
+                React, Next.js, Node.js, and cloud technologies, with a focus on
+                creating exceptional user experiences.
               </p>
               <p className="text-lg text-gray-700 leading-relaxed">
-                When I'm not coding, you'll find me exploring new technologies, contributing to open source projects, and 
-                continuously learning to stay at the forefront of web development trends and best practices.
+                When I'm not coding, you'll find me exploring new technologies,
+                contributing to open source projects, and continuously learning
+                to stay at the forefront of web development trends and best
+                practices.
               </p>
               <div className="flex space-x-4 pt-4">
                 <Link
                   href="https://github.com/najadams"
-                  className="p-3 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-110"
-                >
+                  className="p-3 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-110">
                   <Github className="w-6 h-6 text-gray-700" />
                 </Link>
                 <Link
                   href="https://www.linkedin.com/in/najm-lambon-a11480234/"
-                  className="p-3 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-110"
-                >
+                  className="p-3 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-110">
                   <Linkedin className="w-6 h-6 text-gray-700" />
                 </Link>
                 <Link
                   href="mailto:najmadams1706@gmail.com"
-                  className="p-3 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-110"
-                >
+                  className="p-3 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-110">
                   <Mail className="w-6 h-6 text-gray-700" />
                 </Link>
               </div>
@@ -307,22 +365,29 @@ export default function Portfolio() {
       <section id="skills" className="py-24 px-6 relative z-10" data-animate>
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className={`text-4xl md:text-5xl font-light mb-6 transition-all duration-1000 ${
-              visibleElements.has('skills') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-            }`}>Skills & Expertise</h2>
-            <div className={`w-20 h-1 bg-blue-600 mx-auto transition-all duration-1000 delay-300 ${
-              visibleElements.has('skills') ? 'w-20' : 'w-0'
-            }`}></div>
+            <h2
+              className={`text-4xl md:text-5xl font-light mb-6 transition-all duration-1000 ${
+                visibleElements.has("skills")
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-10"
+              }`}>
+              Skills & Expertise
+            </h2>
+            <div
+              className={`w-20 h-1 bg-blue-600 mx-auto transition-all duration-1000 delay-300 ${
+                visibleElements.has("skills") ? "w-20" : "w-0"
+              }`}></div>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {skills.map((skill, index) => (
               <Card
                 key={skill.name}
                 className={`group hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 hover:rotate-1 ${
-                  visibleElements.has('skills') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+                  visibleElements.has("skills")
+                    ? "opacity-100 translate-y-0"
+                    : "opacity-0 translate-y-10"
                 }`}
-                style={{ transitionDelay: `${index * 100}ms` }}
-              >
+                style={{ transitionDelay: `${index * 100}ms` }}>
                 <CardContent className="p-8 text-center">
                   <div className="mb-6 relative">
                     <div className="w-16 h-16 mx-auto bg-blue-100 rounded-full flex items-center justify-center group-hover:bg-blue-600 transition-all duration-300 group-hover:scale-110 group-hover:rotate-12">
@@ -336,8 +401,7 @@ export default function Portfolio() {
                       style={{
                         width: `${skill.level}%`,
                         animationDelay: `${index * 200}ms`,
-                      }}
-                    ></div>
+                      }}></div>
                   </div>
                   <span className="text-sm text-gray-600">{skill.level}%</span>
                 </CardContent>
@@ -348,46 +412,66 @@ export default function Portfolio() {
       </section>
 
       {/* Projects Section */}
-      <section id="projects" className="py-24 px-6 bg-gray-50 relative z-10" data-animate>
+      <section
+        id="projects"
+        className="py-24 px-6 bg-gray-50 relative z-10"
+        data-animate>
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className={`text-4xl md:text-5xl font-light mb-6 transition-all duration-1000 ${
-              visibleElements.has('projects') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-            }`}>Featured Projects</h2>
-            <div className={`w-20 h-1 bg-blue-600 mx-auto transition-all duration-1000 delay-300 ${
-              visibleElements.has('projects') ? 'w-20' : 'w-0'
-            }`}></div>
+            <h2
+              className={`text-4xl md:text-5xl font-light mb-6 transition-all duration-1000 ${
+                visibleElements.has("projects")
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-10"
+              }`}>
+              Featured Projects
+            </h2>
+            <div
+              className={`w-20 h-1 bg-blue-600 mx-auto transition-all duration-1000 delay-300 ${
+                visibleElements.has("projects") ? "w-20" : "w-0"
+              }`}></div>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {projects.map((project, index) => (
               <Card
                 key={project.title}
                 className={`group hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-4 hover:rotate-1 overflow-hidden ${
-                  visibleElements.has('projects') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+                  visibleElements.has("projects")
+                    ? "opacity-100 translate-y-0"
+                    : "opacity-0 translate-y-10"
                 }`}
-                style={{ transitionDelay: `${index * 150}ms` }}
-              >
+                style={{ transitionDelay: `${index * 150}ms` }}>
                 <div className="h-48 relative overflow-hidden group-hover:scale-105 transition-transform duration-500">
-                   <img 
-                     src={project.title === "Full-Stack POS Platform" ? "/POS.png" : `https://picsum.photos/400/300?random=${index + 1}`}
-                     alt={project.title}
-                     className="w-full h-full object-cover"
-                     loading="lazy"
-                   />
+                  <img
+                    src={
+                      project.title === "Full-Stack POS Platform"
+                        ? "/POS.png"
+                        : project.title === "Offline first POS applicaiton"
+                        ? "/offlinePOS.png"
+                          : project.title == "A simple donations platform flavoured with the arts of the blessed orphans" ?
+                            "/orphans.png"
+                        : project.title === "AI enhanced Audio Steganography"
+                        ? "/steganography.png"
+                        : project.title === "Portfolio Website"
+                        ? "/portfolio.png"
+                        : `https://picsum.photos/400/300?random=${index + 1}`
+                    }
+                    alt={project.title}
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />
                   <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-300"></div>
                   <div className="absolute bottom-4 left-4 right-4">
                     <div className="flex space-x-2">
                       <Link
                         href={project.github}
-                        className="p-2 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-colors duration-300"
-                      >
+                        className="p-2 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-colors duration-300">
                         <Github className="w-4 h-4 text-white" />
                       </Link>
                       {project.live && (
                         <Link
                           href={project.live}
-                          className="p-2 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-colors duration-300"
-                        >
+                          className="p-2 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-colors duration-300">
                           <ExternalLink className="w-4 h-4 text-white" />
                         </Link>
                       )}
@@ -395,11 +479,17 @@ export default function Portfolio() {
                   </div>
                 </div>
                 <CardContent className="p-6">
-                  <h3 className="text-xl font-semibold mb-3">{project.title}</h3>
-                  <p className="text-gray-600 mb-4 leading-relaxed">{project.description}</p>
+                  <h3 className="text-xl font-semibold mb-3">
+                    {project.title}
+                  </h3>
+                  <p className="text-gray-600 mb-4 leading-relaxed">
+                    {project.description}
+                  </p>
                   <div className="flex flex-wrap gap-2">
                     {project.tech.map((tech) => (
-                      <span key={tech} className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full">
+                      <span
+                        key={tech}
+                        className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full">
                         {tech}
                       </span>
                     ))}
@@ -414,25 +504,38 @@ export default function Portfolio() {
       {/* Contact Section */}
       <section id="contact" className="py-24 px-6 relative z-10" data-animate>
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className={`text-4xl md:text-5xl font-light mb-6 transition-all duration-1000 ${
-            visibleElements.has('contact') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-          }`}>Let's Work Together</h2>
-          <div className={`w-20 h-1 bg-blue-600 mx-auto mb-12 transition-all duration-1000 delay-300 ${
-            visibleElements.has('contact') ? 'w-20' : 'w-0'
-          }`}></div>
-          <p className={`text-xl text-gray-600 mb-12 max-w-2xl mx-auto leading-relaxed transition-all duration-1000 delay-500 ${
-            visibleElements.has('contact') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-          }`}>
-            I'm always interested in new opportunities and exciting projects. Let's discuss how we can bring your ideas
-            to life.
+          <h2
+            className={`text-4xl md:text-5xl font-light mb-6 transition-all duration-1000 ${
+              visibleElements.has("contact")
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-10"
+            }`}>
+            Let's Work Together
+          </h2>
+          <div
+            className={`w-20 h-1 bg-blue-600 mx-auto mb-12 transition-all duration-1000 delay-300 ${
+              visibleElements.has("contact") ? "w-20" : "w-0"
+            }`}></div>
+          <p
+            className={`text-xl text-gray-600 mb-12 max-w-2xl mx-auto leading-relaxed transition-all duration-1000 delay-500 ${
+              visibleElements.has("contact")
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-10"
+            }`}>
+            I'm always interested in new opportunities and exciting projects.
+            Let's discuss how we can bring your ideas to life.
           </p>
-          <div className={`flex flex-col sm:flex-row gap-6 justify-center transition-all duration-1000 delay-700 ${
-            visibleElements.has('contact') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-          }`}>
-            <Button 
+          <div
+            className={`flex flex-col sm:flex-row gap-6 justify-center transition-all duration-1000 delay-700 ${
+              visibleElements.has("contact")
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-10"
+            }`}>
+            <Button
               className="px-8 py-4 text-lg bg-blue-600 hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-blue-500/25"
-              onClick={() => window.open('mailto:najmadams1706@gmail.com', '_blank')}
-            >
+              onClick={() =>
+                window.open("mailto:najmadams1706@gmail.com", "_blank")
+              }>
               <Mail className="w-5 h-5 mr-2" />
               Send Email
             </Button>
@@ -440,14 +543,13 @@ export default function Portfolio() {
               variant="outline"
               className="px-8 py-4 text-lg border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white transition-all duration-300 transform hover:scale-105 hover:shadow-lg bg-transparent"
               onClick={() => {
-                const link = document.createElement('a');
-                link.href = '/NajmAdamsResume.pdf';
-                link.download = 'NajmAdamsResume.pdf';
+                const link = document.createElement("a");
+                link.href = "/NajmAdamsResume.pdf";
+                link.download = "NajmAdamsResume.pdf";
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
-              }}
-            >
+              }}>
               Download Resume
             </Button>
           </div>
@@ -457,9 +559,12 @@ export default function Portfolio() {
       {/* Footer */}
       <footer className="py-12 px-6 bg-gray-900 text-white">
         <div className="max-w-6xl mx-auto text-center">
-          <p className="text-gray-400">© {new Date().getFullYear()} Najm Adams. Crafted with passion and precision.</p>
+          <p className="text-gray-400">
+            © {new Date().getFullYear()} Najm Adams. Crafted with passion and
+            precision.
+          </p>
         </div>
       </footer>
     </div>
-  )
+  );
 }
