@@ -99,7 +99,7 @@ export default function Portfolio() {
 
   const projects = [
     {
-      title: "Full-Stack E-commerce Platform",
+      title: "Full-Stack POS Platform",
       description:
         "Comprehensive e-commerce solution with user authentication, payment processing, and admin dashboard",
       tech: ["React", "Node.js", "MongoDB", "JWT"],
@@ -369,7 +369,7 @@ export default function Portfolio() {
               >
                 <div className="h-48 relative overflow-hidden group-hover:scale-105 transition-transform duration-500">
                    <img 
-                     src={`https://picsum.photos/400/300?random=${index + 1}`}
+                     src={project.title === "Full-Stack POS Platform" ? "/POS.png" : `https://picsum.photos/400/300?random=${index + 1}`}
                      alt={project.title}
                      className="w-full h-full object-cover"
                      loading="lazy"
@@ -383,12 +383,14 @@ export default function Portfolio() {
                       >
                         <Github className="w-4 h-4 text-white" />
                       </Link>
-                      <Link
-                        href={project.live}
-                        className="p-2 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-colors duration-300"
-                      >
-                        <ExternalLink className="w-4 h-4 text-white" />
-                      </Link>
+                      {project.live && (
+                        <Link
+                          href={project.live}
+                          className="p-2 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-colors duration-300"
+                        >
+                          <ExternalLink className="w-4 h-4 text-white" />
+                        </Link>
+                      )}
                     </div>
                   </div>
                 </div>
