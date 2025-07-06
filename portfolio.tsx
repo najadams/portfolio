@@ -141,7 +141,7 @@ export default function Portfolio() {
   const projects = [
     {
       title:
-        "A simple donations platform flavoured with the arts of the blessed orphans",
+        "A simple donations platform flavoured with the arts of young talents",
       description: "Modern UI used for donation hub.",
       tech: ["React", "stripe", "formik", "chakra ui", "Cloudinary"],
       github: "https://github.com/najadams/chat-app",
@@ -489,8 +489,9 @@ export default function Portfolio() {
                         ? "/POS.png"
                         : project.title === "Offline first POS applicaiton"
                         ? "/offlinePOS.png"
-                          : project.title == "A simple donations platform flavoured with the arts of the blessed orphans" ?
-                            "/orphans.png"
+                        : project.title ==
+                          "A simple donations platform flavoured with the arts of young talents"
+                        ? "/orphans.png"
                         : project.title === "AI enhanced Audio Steganography"
                         ? "/steganography.png"
                         : project.title === "Portfolio Website"
@@ -566,7 +567,7 @@ export default function Portfolio() {
             I'm always interested in new opportunities and exciting projects.
             Let's discuss how we can bring your ideas to life.
           </p>
-          
+
           {/* Contact Form */}
           <form
             onSubmit={handleContactSubmit}
@@ -638,7 +639,7 @@ export default function Portfolio() {
               )}
             </Button>
           </form>
-          
+
           {/* Alternative Contact Options */}
           <div
             className={`flex flex-col sm:flex-row gap-6 justify-center transition-all duration-1000 delay-900 ${
