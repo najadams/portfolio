@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Github, Linkedin, Mail, ExternalLink, Code, Database, Globe, Smartphone } from "lucide-react"
@@ -11,7 +11,9 @@ export default function Portfolio() {
   const [activeSection, setActiveSection] = useState("home")
   const [scrollY, setScrollY] = useState(0)
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const [visibleElements, setVisibleElements] = useState<Set<string>>(new Set())
   const lightTrailRef = useRef<HTMLDivElement>(null)
+  const observerRef = useRef<IntersectionObserver | null>(null)
 
   useEffect(() => {
     setIsVisible(true)
@@ -50,11 +52,34 @@ export default function Portfolio() {
       setMousePosition({ x: e.clientX, y: e.clientY })
     }
 
+    // Intersection Observer for lazy loading animations
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setVisibleElements(prev => new Set([...prev, entry.target.id]))
+          }
+        })
+      },
+      { threshold: 0.1, rootMargin: '50px' }
+    )
+
+    // Observe all sections
+    const sections = document.querySelectorAll('[data-animate]')
+    sections.forEach(section => {
+      if (observerRef.current) {
+        observerRef.current.observe(section)
+      }
+    })
+
     window.addEventListener("scroll", handleScroll)
     window.addEventListener("mousemove", handleMouseMove)
     return () => {
       window.removeEventListener("scroll", handleScroll)
       window.removeEventListener("mousemove", handleMouseMove)
+      if (observerRef.current) {
+        observerRef.current.disconnect()
+      }
     }
   }, [])
 
@@ -223,11 +248,15 @@ export default function Portfolio() {
       </section>
 
       {/* About Section */}
-      <section id="about" className="py-24 px-6 bg-gray-50 relative z-10">
+      <section id="about" className="py-24 px-6 bg-gray-50 relative z-10" data-animate>
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-light mb-6 animate-fade-in-up">About Me</h2>
-            <div className="w-20 h-1 bg-blue-600 mx-auto animate-expand"></div>
+            <h2 className={`text-4xl md:text-5xl font-light mb-6 transition-all duration-1000 ${
+              visibleElements.has('about') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+            }`}>About Me</h2>
+            <div className={`w-20 h-1 bg-blue-600 mx-auto transition-all duration-1000 delay-300 ${
+              visibleElements.has('about') ? 'w-20' : 'w-0'
+            }`}></div>
           </div>
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="space-y-6 animate-fade-in-left">
@@ -271,18 +300,24 @@ export default function Portfolio() {
       </section>
 
       {/* Skills Section */}
-      <section id="skills" className="py-24 px-6 relative z-10">
+      <section id="skills" className="py-24 px-6 relative z-10" data-animate>
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-light mb-6 animate-fade-in-up">Skills & Expertise</h2>
-            <div className="w-20 h-1 bg-blue-600 mx-auto animate-expand"></div>
+            <h2 className={`text-4xl md:text-5xl font-light mb-6 transition-all duration-1000 ${
+              visibleElements.has('skills') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+            }`}>Skills & Expertise</h2>
+            <div className={`w-20 h-1 bg-blue-600 mx-auto transition-all duration-1000 delay-300 ${
+              visibleElements.has('skills') ? 'w-20' : 'w-0'
+            }`}></div>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {skills.map((skill, index) => (
               <Card
                 key={skill.name}
-                className="group hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 hover:rotate-1 animate-fade-in-up"
-                style={{ animationDelay: `${index * 0.1}s` }}
+                className={`group hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 hover:rotate-1 ${
+                  visibleElements.has('skills') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+                }`}
+                style={{ transitionDelay: `${index * 100}ms` }}
               >
                 <CardContent className="p-8 text-center">
                   <div className="mb-6 relative">
@@ -309,20 +344,32 @@ export default function Portfolio() {
       </section>
 
       {/* Projects Section */}
-      <section id="projects" className="py-24 px-6 bg-gray-50 relative z-10">
+      <section id="projects" className="py-24 px-6 bg-gray-50 relative z-10" data-animate>
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-light mb-6 animate-fade-in-up">Featured Projects</h2>
-            <div className="w-20 h-1 bg-blue-600 mx-auto animate-expand"></div>
+            <h2 className={`text-4xl md:text-5xl font-light mb-6 transition-all duration-1000 ${
+              visibleElements.has('projects') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+            }`}>Featured Projects</h2>
+            <div className={`w-20 h-1 bg-blue-600 mx-auto transition-all duration-1000 delay-300 ${
+              visibleElements.has('projects') ? 'w-20' : 'w-0'
+            }`}></div>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {projects.map((project, index) => (
               <Card
                 key={project.title}
-                className="group hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-4 hover:rotate-1 overflow-hidden animate-fade-in-up"
-                style={{ animationDelay: `${index * 0.1}s` }}
+                className={`group hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-4 hover:rotate-1 overflow-hidden ${
+                  visibleElements.has('projects') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+                }`}
+                style={{ transitionDelay: `${index * 150}ms` }}
               >
-                <div className="h-48 bg-gradient-to-br from-blue-400 to-blue-600 relative overflow-hidden group-hover:scale-105 transition-transform duration-500">
+                <div className="h-48 relative overflow-hidden group-hover:scale-105 transition-transform duration-500">
+                   <img 
+                     src={`https://picsum.photos/400/300?random=${index + 1}`}
+                     alt={project.title}
+                     className="w-full h-full object-cover"
+                     loading="lazy"
+                   />
                   <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-300"></div>
                   <div className="absolute bottom-4 left-4 right-4">
                     <div className="flex space-x-2">
@@ -359,15 +406,23 @@ export default function Portfolio() {
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="py-24 px-6 relative z-10">
+      <section id="contact" className="py-24 px-6 relative z-10" data-animate>
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl md:text-5xl font-light mb-6 animate-fade-in-up">Let's Work Together</h2>
-          <div className="w-20 h-1 bg-blue-600 mx-auto mb-12 animate-expand"></div>
-          <p className="text-xl text-gray-600 mb-12 max-w-2xl mx-auto leading-relaxed animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+          <h2 className={`text-4xl md:text-5xl font-light mb-6 transition-all duration-1000 ${
+            visibleElements.has('contact') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+          }`}>Let's Work Together</h2>
+          <div className={`w-20 h-1 bg-blue-600 mx-auto mb-12 transition-all duration-1000 delay-300 ${
+            visibleElements.has('contact') ? 'w-20' : 'w-0'
+          }`}></div>
+          <p className={`text-xl text-gray-600 mb-12 max-w-2xl mx-auto leading-relaxed transition-all duration-1000 delay-500 ${
+            visibleElements.has('contact') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+          }`}>
             I'm always interested in new opportunities and exciting projects. Let's discuss how we can bring your ideas
             to life.
           </p>
-          <div className="flex flex-col sm:flex-row gap-6 justify-center animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+          <div className={`flex flex-col sm:flex-row gap-6 justify-center transition-all duration-1000 delay-700 ${
+            visibleElements.has('contact') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+          }`}>
             <Button 
               className="px-8 py-4 text-lg bg-blue-600 hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-blue-500/25"
               onClick={() => window.open('mailto:najmadams1706@gmail.com', '_blank')}
