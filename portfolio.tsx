@@ -100,47 +100,51 @@ export default function Portfolio() {
   const projects = [
     {
       title: "Full-Stack E-commerce Platform",
-      description: "Comprehensive e-commerce solution with user authentication, payment processing, and admin dashboard",
-      tech: ["React", "Node.js", "MongoDB", "Stripe", "JWT"],
-      github: "https://github.com/najadams/ecommerce-platform",
-      live: "https://najadams-ecommerce.vercel.app",
+      description:
+        "Comprehensive e-commerce solution with user authentication, payment processing, and admin dashboard",
+      tech: ["React", "Node.js", "MongoDB", "JWT"],
+      github: "https://github.com/najadams/sophon.git",
+      live: "https://mannos.netlify.app",
     },
     {
       title: "Real-time Chat Application",
-      description: "Modern chat application with real-time messaging, file sharing, and group chat functionality",
+      description:
+        "Modern mobile app chat application for a school with real-time messaging, file sharing functionality",
       tech: ["React", "Socket.io", "Express", "MongoDB", "Cloudinary"],
       github: "https://github.com/najadams/chat-app",
       live: "https://najadams-chat.vercel.app",
     },
     {
-      title: "Task Management Dashboard",
-      description: "Collaborative project management tool with drag-and-drop functionality and team collaboration features",
-      tech: ["Next.js", "TypeScript", "Prisma", "PostgreSQL", "Tailwind CSS"],
-      github: "https://github.com/najadams/task-manager",
-      live: "https://najadams-tasks.vercel.app",
+      title: "AI Integrated mobile health assistant",
+      description:
+        "Ai integrated mental health assistant with up to date resources. Impeccable at keeping track of patient health",
+      tech: ["React Native", "Javascript", "mongoDB", "Tailwind CSS"],
+      github: "https://github.com/najadams/healthMapp.git",
     },
     {
       title: "Weather Analytics Dashboard",
-      description: "Comprehensive weather dashboard with historical data, forecasts, and interactive charts",
+      description:
+        "Comprehensive weather dashboard with historical data, forecasts, and interactive charts",
       tech: ["React", "Chart.js", "OpenWeather API", "Material-UI"],
       github: "https://github.com/najadams/weather-dashboard",
       live: "https://najadams-weather.vercel.app",
     },
     {
       title: "Portfolio Website",
-      description: "Responsive portfolio website showcasing projects and skills with modern design and animations",
+      description:
+        "Responsive portfolio website showcasing projects and skills with modern design and animations",
       tech: ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion"],
       github: "https://github.com/najadams/portfolio",
-      live: "https://najadams.dev",
+      live: "https://najs.netlify.app",
     },
     {
-      title: "Blog Platform",
-      description: "Full-featured blog platform with markdown support, comments, and content management system",
-      tech: ["Next.js", "MDX", "Sanity CMS", "Vercel"],
+      title: "AI enhanced Audio Steganography",
+      description:
+        "A collaborative work on reinforcement learning. Functional audio ai audio steganography and steganalysis tool. Mainly focussing on imperceptiblity of processed data",
+      tech: ["React.js", "TypeScript", " Python", "Gymnasium PPO Agent"],
       github: "https://github.com/najadams/blog-platform",
-      live: "https://najadams-blog.vercel.app",
     },
-  ]
+  ];
 
   return (
     <div className="min-h-screen bg-white text-gray-900 relative overflow-hidden">
