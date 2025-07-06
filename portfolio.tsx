@@ -3,7 +3,9 @@
 import { useState, useEffect, useRef, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Github, Linkedin, Mail, ExternalLink, Code, Database, Globe, Smartphone } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Github, Linkedin, Mail, ExternalLink, Code, Database, Globe, Smartphone, Send } from "lucide-react"
 import Link from "next/link"
 
 export default function Portfolio() {
@@ -12,6 +14,8 @@ export default function Portfolio() {
   const [scrollY, setScrollY] = useState(0)
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const [visibleElements, setVisibleElements] = useState<Set<string>>(new Set())
+  const [contactForm, setContactForm] = useState({ name: '', email: '', subject: '', message: '' })
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const lightTrailRef = useRef<HTMLDivElement>(null)
   const observerRef = useRef<IntersectionObserver | null>(null)
 
@@ -87,6 +91,43 @@ export default function Portfolio() {
     const element = document.getElementById(sectionId)
     if (element) {
       element.scrollIntoView({ behavior: "smooth" })
+    }
+  }
+
+  const handleContactFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setContactForm(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }))
+  }
+
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+    
+    try {
+      // Create mailto link with form data
+      const subject = encodeURIComponent(contactForm.subject || 'Contact from Portfolio')
+      const body = encodeURIComponent(
+        `Name: ${contactForm.name}\n` +
+        `Email: ${contactForm.email}\n\n` +
+        `Message:\n${contactForm.message}`
+      )
+      const mailtoLink = `mailto:najmadams1706@gmail.com?subject=${subject}&body=${body}`
+      
+      // Open email client
+      window.open(mailtoLink, '_blank')
+      
+      // Reset form
+      setContactForm({ name: '', email: '', subject: '', message: '' })
+      
+      // Show success message (you could add a toast notification here)
+      alert('Email client opened! Please send the email from your email application.')
+    } catch (error) {
+      console.error('Error opening email client:', error)
+      alert('There was an error opening your email client. Please try again.')
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -525,19 +566,94 @@ export default function Portfolio() {
             I'm always interested in new opportunities and exciting projects.
             Let's discuss how we can bring your ideas to life.
           </p>
+          
+          {/* Contact Form */}
+          <form
+            onSubmit={handleContactSubmit}
+            className={`max-w-2xl mx-auto mb-12 transition-all duration-1000 delay-700 ${
+              visibleElements.has("contact")
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-10"
+            }`}>
+            <div className="grid md:grid-cols-2 gap-6 mb-6">
+              <div>
+                <Input
+                  type="text"
+                  name="name"
+                  placeholder="Your Name"
+                  value={contactForm.name}
+                  onChange={handleContactFormChange}
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                />
+              </div>
+              <div>
+                <Input
+                  type="email"
+                  name="email"
+                  placeholder="Your Email"
+                  value={contactForm.email}
+                  onChange={handleContactFormChange}
+                  required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                />
+              </div>
+            </div>
+            <div className="mb-6">
+              <Input
+                type="text"
+                name="subject"
+                placeholder="Subject"
+                value={contactForm.subject}
+                onChange={handleContactFormChange}
+                required
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+              />
+            </div>
+            <div className="mb-6">
+              <Textarea
+                name="message"
+                placeholder="Your Message"
+                value={contactForm.message}
+                onChange={handleContactFormChange}
+                required
+                rows={6}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 resize-none"
+              />
+            </div>
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full md:w-auto px-8 py-4 text-lg bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-blue-500/25">
+              {isSubmitting ? (
+                <>
+                  <div className="w-5 h-5 mr-2 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  Sending...
+                </>
+              ) : (
+                <>
+                  <Send className="w-5 h-5 mr-2" />
+                  Send Message
+                </>
+              )}
+            </Button>
+          </form>
+          
+          {/* Alternative Contact Options */}
           <div
-            className={`flex flex-col sm:flex-row gap-6 justify-center transition-all duration-1000 delay-700 ${
+            className={`flex flex-col sm:flex-row gap-6 justify-center transition-all duration-1000 delay-900 ${
               visibleElements.has("contact")
                 ? "opacity-100 translate-y-0"
                 : "opacity-0 translate-y-10"
             }`}>
             <Button
-              className="px-8 py-4 text-lg bg-blue-600 hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-blue-500/25"
+              variant="outline"
+              className="px-8 py-4 text-lg border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white transition-all duration-300 transform hover:scale-105 hover:shadow-lg bg-transparent"
               onClick={() =>
                 window.open("mailto:najmadams1706@gmail.com", "_blank")
               }>
               <Mail className="w-5 h-5 mr-2" />
-              Send Email
+              Direct Email
             </Button>
             <Button
               variant="outline"
