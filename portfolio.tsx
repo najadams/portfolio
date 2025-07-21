@@ -182,7 +182,7 @@ export default function Portfolio() {
       description:
         "Ai integrated mental health assistant with up to date resources. Impeccable at keeping track of patient health",
       tech: ["React Native", "Javascript", "mongoDB", "Tailwind CSS"],
-      github: "https://github.com/najadams/healthMapp.git",
+      github: "https://github.com/najadams/MentalHealthM_App",
     },
   ];
 
@@ -377,16 +377,22 @@ export default function Portfolio() {
               <div className="flex space-x-4 pt-4">
                 <Link
                   href="https://github.com/najadams"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="p-3 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-110">
                   <Github className="w-6 h-6 text-gray-700" />
                 </Link>
                 <Link
                   href="https://www.linkedin.com/in/najm-lambon-a11480234/"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="p-3 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-110">
                   <Linkedin className="w-6 h-6 text-gray-700" />
                 </Link>
                 <Link
                   href="mailto:najmadams1706@gmail.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="p-3 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-110">
                   <Mail className="w-6 h-6 text-gray-700" />
                 </Link>
@@ -507,12 +513,16 @@ export default function Portfolio() {
                     <div className="flex space-x-2">
                       <Link
                         href={project.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="p-2 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-colors duration-300">
                         <Github className="w-4 h-4 text-white" />
                       </Link>
                       {project.live && (
                         <Link
                           href={project.live}
+                          target="_blank"
+                          rel="noopener noreferrer"
                           className="p-2 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-colors duration-300">
                           <ExternalLink className="w-4 h-4 text-white" />
                         </Link>
