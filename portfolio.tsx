@@ -401,7 +401,12 @@ export default function Portfolio() {
             <div className="relative animate-fade-in-right">
               <div className="w-80 h-80 mx-auto bg-gradient-to-br from-blue-400 to-purple-600 rounded-full opacity-20 absolute -top-4 -left-4"></div>
               <div className="w-80 h-80 mx-auto bg-gray-200 rounded-full relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-purple-600 opacity-10"></div>
+                <img
+                  src="/pic.JPG"
+                  alt="Najm Adams"
+                  className="w-full h-full object-cover rounded-full"
+                />
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-purple-600 opacity-10 rounded-full"></div>
               </div>
             </div>
           </div>
