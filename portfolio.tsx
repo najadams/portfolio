@@ -1,15 +1,29 @@
 "use client"
 
 import { useState, useEffect, useRef, useCallback } from "react"
+import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Github, Linkedin, Mail, ExternalLink, Code, Database, Globe, Smartphone, Send } from "lucide-react"
+import { Github, Linkedin, Mail, ExternalLink, Code, Database, Globe, Smartphone, Send, Menu, X, Heart } from "lucide-react"
 import Link from "next/link"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { IntroModal } from "@/components/IntroModal"
 import { projects } from "@/data/projects"
+import {
+  AnimatedSocialIcon,
+  AnimatedTechTag,
+  AnimatedProgress,
+  AnimatedCounter,
+  Floating,
+  StaggerContainer,
+  MotionItem,
+  springConfigs,
+  hoverVariants,
+  tapAnimation,
+} from "@/components/animations/MotionWrapper"
+import { useTilt, usePrefersReducedMotion } from "@/hooks/useMousePosition"
 
 export default function Portfolio() {
   const [isVisible, setIsVisible] = useState(false)
@@ -19,8 +33,11 @@ export default function Portfolio() {
   const [visibleElements, setVisibleElements] = useState<Set<string>>(new Set())
   const [contactForm, setContactForm] = useState({ name: '', email: '', subject: '', message: '' })
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSendAnimating, setIsSendAnimating] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const lightTrailRef = useRef<HTMLDivElement>(null)
   const observerRef = useRef<IntersectionObserver | null>(null)
+  const prefersReducedMotion = usePrefersReducedMotion()
 
   useEffect(() => {
     setIsVisible(true)
@@ -47,10 +64,9 @@ export default function Portfolio() {
       if (lightTrailRef.current) {
         const progress = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)
         const amplitude = 100
-        const frequency = 0.01
         const x = Math.sin(progress * Math.PI * 8) * amplitude + window.innerWidth / 2
         const y = progress * (document.documentElement.scrollHeight - 100)
-        
+
         lightTrailRef.current.style.transform = `translate(${x}px, ${y}px)`
       }
     }
@@ -95,6 +111,7 @@ export default function Portfolio() {
     if (element) {
       element.scrollIntoView({ behavior: "smooth" })
     }
+    setMobileMenuOpen(false)
   }
 
   const handleContactFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -107,7 +124,8 @@ export default function Portfolio() {
   const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
-    
+    setIsSendAnimating(true)
+
     try {
       // Create mailto link with form data
       const subject = encodeURIComponent(contactForm.subject || 'Contact from Portfolio')
@@ -117,20 +135,21 @@ export default function Portfolio() {
         `Message:\n${contactForm.message}`
       )
       const mailtoLink = `mailto:najmadams1706@gmail.com?subject=${subject}&body=${body}`
-      
+
       // Open email client
       window.open(mailtoLink, '_blank')
-      
+
       // Reset form
       setContactForm({ name: '', email: '', subject: '', message: '' })
-      
-      // Show success message (you could add a toast notification here)
+
+      // Show success message
       alert('Email client opened! Please send the email from your email application.')
     } catch (error) {
       console.error('Error opening email client:', error)
       alert('There was an error opening your email client. Please try again.')
     } finally {
       setIsSubmitting(false)
+      setTimeout(() => setIsSendAnimating(false), 500)
     }
   }
 
@@ -141,6 +160,8 @@ export default function Portfolio() {
     { name: "DevOps & Cloud", icon: Code, level: 80 },
   ]
 
+  const navItems = ["home", "about", "skills", "projects", "contact"]
+
   return (
     <div className="min-h-screen bg-background text-foreground relative overflow-hidden">
       {/* Intro Modal */}
@@ -150,14 +171,26 @@ export default function Portfolio() {
       <div className="fixed inset-0 pointer-events-none z-0">
         {/* Floating Particles */}
         {[...Array(20)].map((_, i) => (
-          <div
+          <motion.div
             key={i}
-            className="absolute w-2 h-2 bg-primary rounded-full opacity-20 animate-pulse"
+            className="absolute w-2 h-2 bg-primary rounded-full opacity-20"
             style={{
               left: `${(i * 5) % 100}%`,
               top: `${(i * 7) % 100}%`,
-              animationDelay: `${(i * 0.15) % 3}s`,
-              animationDuration: `${3 + (i % 3)}s`,
+            }}
+            animate={
+              prefersReducedMotion
+                ? {}
+                : {
+                    y: [0, -20, 0],
+                    opacity: [0.2, 0.5, 0.2],
+                  }
+            }
+            transition={{
+              duration: 3 + (i % 3),
+              repeat: Infinity,
+              delay: (i * 0.15) % 3,
+              ease: "easeInOut",
             }}
           />
         ))}
@@ -176,11 +209,14 @@ export default function Portfolio() {
         />
 
         {/* Mouse Follower */}
-        <div
-          className="absolute w-6 h-6 pointer-events-none transition-transform duration-300 ease-out"
-          style={{
+        <motion.div
+          className="absolute w-6 h-6 pointer-events-none"
+          animate={{
             left: mousePosition.x - 12,
             top: mousePosition.y - 12,
+          }}
+          transition={{ type: "spring", stiffness: 500, damping: 28 }}
+          style={{
             background:
               "radial-gradient(circle, rgba(147, 51, 234, 0.3) 0%, transparent 70%)",
             filter: "blur(1px)",
@@ -188,116 +224,202 @@ export default function Portfolio() {
         />
 
         {/* Gradient Orbs */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse" />
-        <div
-          className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse"
-          style={{ animationDelay: "1s" }}
+        <motion.div
+          className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl"
+          animate={prefersReducedMotion ? {} : { scale: [1, 1.1, 1], opacity: [0.1, 0.15, 0.1] }}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl"
+          animate={prefersReducedMotion ? {} : { scale: [1.1, 1, 1.1], opacity: [0.1, 0.15, 0.1] }}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 2 }}
         />
       </div>
+
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border transition-all duration-300 hover:bg-background/90">
+      <motion.nav
+        className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border"
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={springConfigs.bouncy}
+      >
         <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
-            <div className="text-xl font-bold text-primary">Najm Adams</div>
+            <motion.div
+              className="text-xl font-bold text-primary"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              Najm Adams
+            </motion.div>
             <div className="flex items-center">
+              {/* Desktop Navigation */}
               <div className="hidden md:flex items-center space-x-8">
-                {["home", "about", "skills", "projects", "contact"].map(
-                  (section) => (
-                    <button
-                      key={section}
-                      onClick={() => scrollToSection(section)}
-                      className={`capitalize transition-all duration-300 hover:scale-110 ${
-                        activeSection === section
-                          ? "text-primary font-medium transform scale-110"
-                          : "text-muted-foreground hover:text-foreground"
-                      }`}>
-                      {section}
-                    </button>
-                  )
-                )}
+                {navItems.map((section) => (
+                  <motion.button
+                    key={section}
+                    onClick={() => scrollToSection(section)}
+                    className={`capitalize relative ${
+                      activeSection === section
+                        ? "text-primary font-medium"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    transition={springConfigs.snappy}
+                  >
+                    {section}
+                    <motion.div
+                      className="absolute -bottom-1 left-0 right-0 h-0.5 bg-primary"
+                      initial={{ scaleX: 0 }}
+                      animate={{ scaleX: activeSection === section ? 1 : 0 }}
+                      whileHover={{ scaleX: 1 }}
+                      transition={springConfigs.bouncy}
+                      style={{ originX: 0.5 }}
+                    />
+                  </motion.button>
+                ))}
               </div>
+
+              {/* Mobile Menu Button */}
+              <motion.button
+                className="md:hidden p-2 mr-2"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                whileTap={{ scale: 0.9 }}
+              >
+                <AnimatePresence mode="wait">
+                  {mobileMenuOpen ? (
+                    <motion.div
+                      key="close"
+                      initial={{ rotate: -90, opacity: 0 }}
+                      animate={{ rotate: 0, opacity: 1 }}
+                      exit={{ rotate: 90, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <X className="w-6 h-6" />
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="menu"
+                      initial={{ rotate: 90, opacity: 0 }}
+                      animate={{ rotate: 0, opacity: 1 }}
+                      exit={{ rotate: -90, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <Menu className="w-6 h-6" />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.button>
+
               <ThemeToggle />
             </div>
           </div>
         </div>
-      </nav>
+
+        {/* Mobile Menu */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              className="md:hidden absolute top-full left-0 right-0 bg-background/95 backdrop-blur-md border-b border-border"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={springConfigs.snappy}
+            >
+              <div className="px-6 py-4 space-y-2">
+                {navItems.map((section, index) => (
+                  <motion.button
+                    key={section}
+                    onClick={() => scrollToSection(section)}
+                    className={`block w-full text-left capitalize py-2 ${
+                      activeSection === section
+                        ? "text-primary font-medium"
+                        : "text-muted-foreground"
+                    }`}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.05, ...springConfigs.snappy }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    {section}
+                  </motion.button>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.nav>
 
       {/* Hero Section */}
       <section
         id="home"
         className="min-h-screen flex items-center justify-center px-6 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
-          <div
-            className={`transition-all duration-1000 ${
-              isVisible
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 translate-y-10"
-            }`}>
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: [0.33, 1, 0.68, 1] }}
+          >
             <h1 className="text-5xl md:text-7xl font-light mb-6 leading-tight">
-              <span
-                className="inline-block animate-bounce"
-                style={{ animationDelay: "0.1s" }}>
-                S
-              </span>
-              <span
-                className="inline-block animate-bounce"
-                style={{ animationDelay: "0.2s" }}>
-                o
-              </span>
-              <span
-                className="inline-block animate-bounce"
-                style={{ animationDelay: "0.3s" }}>
-                f
-              </span>
-              <span
-                className="inline-block animate-bounce"
-                style={{ animationDelay: "0.4s" }}>
-                t
-              </span>
-              <span
-                className="inline-block animate-bounce"
-                style={{ animationDelay: "0.5s" }}>
-                w
-              </span>
-              <span
-                className="inline-block animate-bounce"
-                style={{ animationDelay: "0.6s" }}>
-                a
-              </span>
-              <span
-                className="inline-block animate-bounce"
-                style={{ animationDelay: "0.7s" }}>
-                r
-              </span>
-              <span
-                className="inline-block animate-bounce"
-                style={{ animationDelay: "0.8s" }}>
-                e
-              </span>
-              <span className="block text-primary font-medium">Developer</span>
+              {"Software".split("").map((char, i) => (
+                <motion.span
+                  key={i}
+                  className="inline-block"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    delay: 0.1 + i * 0.05,
+                    type: "spring",
+                    stiffness: 300,
+                    damping: 10,
+                  }}
+                  whileHover={prefersReducedMotion ? {} : { y: -5, scale: 1.1 }}
+                >
+                  {char}
+                </motion.span>
+              ))}
+              <motion.span
+                className="block text-primary font-medium"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.6, type: "spring", stiffness: 200 }}
+              >
+                Developer
+              </motion.span>
             </h1>
-            <p
-              className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed animate-fade-in-up"
-              style={{ animationDelay: "0.5s" }}>
+            <motion.p
+              className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.7, duration: 0.6 }}
+            >
               Crafting digital experiences with clean code and innovative
               solutions
-            </p>
-            <div
-              className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up"
-              style={{ animationDelay: "0.8s" }}>
-              <Button
-                onClick={() => scrollToSection("projects")}
-                className="px-8 py-3 text-lg bg-primary hover:bg-primary/90 text-primary-foreground transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-primary/25">
-                View My Work
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => scrollToSection("contact")}
-                className="px-8 py-3 text-lg border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
-                Get In Touch
-              </Button>
-            </div>
-          </div>
+            </motion.p>
+            <motion.div
+              className="flex flex-col sm:flex-row gap-4 justify-center"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.9, duration: 0.6 }}
+            >
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={tapAnimation}>
+                <Button
+                  onClick={() => scrollToSection("projects")}
+                  className="px-8 py-3 text-lg bg-primary hover:bg-primary/90 text-primary-foreground transition-all duration-300 hover:shadow-lg hover:shadow-primary/25">
+                  View My Work
+                </Button>
+              </motion.div>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={tapAnimation}>
+                <Button
+                  variant="outline"
+                  onClick={() => scrollToSection("contact")}
+                  className="px-8 py-3 text-lg border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 hover:shadow-lg">
+                  Get In Touch
+                </Button>
+              </motion.div>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
@@ -308,21 +430,31 @@ export default function Portfolio() {
         data-animate>
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-16">
-            <h2
-              className={`text-4xl md:text-5xl font-light mb-6 transition-all duration-1000 ${
-                visibleElements.has("about")
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-10"
-              }`}>
+            <motion.h2
+              className="text-4xl md:text-5xl font-light mb-6"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={springConfigs.gentle}
+            >
               About Me
-            </h2>
-            <div
-              className={`w-20 h-1 bg-primary mx-auto transition-all duration-1000 delay-300 ${
-                visibleElements.has("about") ? "w-20" : "w-0"
-              }`}></div>
+            </motion.h2>
+            <motion.div
+              className="w-20 h-1 bg-primary mx-auto"
+              initial={{ width: 0 }}
+              whileInView={{ width: 80 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3, duration: 0.6 }}
+            />
           </div>
           <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="space-y-6 animate-fade-in-left">
+            <motion.div
+              className="space-y-6"
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={springConfigs.gentle}
+            >
               <p className="text-lg text-muted-foreground leading-relaxed">
                 I'm a passionate full-stack developer with expertise in building
                 modern web applications and scalable solutions. I specialize in
@@ -336,40 +468,65 @@ export default function Portfolio() {
                 practices.
               </p>
               <div className="flex space-x-4 pt-4">
-                <Link
+                <AnimatedSocialIcon
                   href="https://github.com/najadams"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-3 bg-background rounded-full shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-110">
+                  hoverEffect="spinBounce"
+                  className="p-3 bg-background rounded-full shadow-md hover:shadow-lg transition-shadow duration-300"
+                >
                   <Github className="w-6 h-6 text-muted-foreground" />
-                </Link>
-                <Link
+                </AnimatedSocialIcon>
+                <AnimatedSocialIcon
                   href="https://www.linkedin.com/in/najm-lambon-a11480234/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-3 bg-background rounded-full shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-110">
+                  hoverEffect="heartbeat"
+                  className="p-3 bg-background rounded-full shadow-md hover:shadow-lg transition-shadow duration-300"
+                >
                   <Linkedin className="w-6 h-6 text-muted-foreground" />
-                </Link>
-                <Link
+                </AnimatedSocialIcon>
+                <AnimatedSocialIcon
                   href="mailto:najmadams1706@gmail.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-3 bg-background rounded-full shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-110">
+                  hoverEffect="wiggle"
+                  className="p-3 bg-background rounded-full shadow-md hover:shadow-lg transition-shadow duration-300"
+                >
                   <Mail className="w-6 h-6 text-muted-foreground" />
-                </Link>
+                </AnimatedSocialIcon>
               </div>
-            </div>
-            <div className="relative animate-fade-in-right">
-              <div className="w-80 h-80 mx-auto bg-gradient-to-br from-primary to-purple-600 rounded-full opacity-20 absolute -top-4 -left-4"></div>
-              <div className="w-80 h-80 mx-auto bg-muted rounded-full relative overflow-hidden">
-                <img
-                  src="/pic.JPG"
-                  alt="Najm Adams"
-                  className="w-full h-full object-cover rounded-full"
-                />
-                <div className="absolute inset-0 bg-gradient-to-br from-primary to-purple-600 opacity-10 rounded-full"></div>
-              </div>
-            </div>
+            </motion.div>
+            <motion.div
+              className="relative"
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={springConfigs.gentle}
+            >
+              <motion.div
+                className="w-80 h-80 mx-auto bg-gradient-to-br from-primary to-purple-600 rounded-full opacity-20 absolute -top-4 -left-4"
+                animate={
+                  prefersReducedMotion
+                    ? {}
+                    : { rotate: 360 }
+                }
+                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+              />
+              <Floating duration={4} y={15}>
+                <div className="w-80 h-80 mx-auto relative">
+                  {/* Rotating gradient border */}
+                  <motion.div
+                    className="absolute -inset-1 rounded-full animate-gradient-rotate"
+                    style={{ padding: "3px" }}
+                  >
+                    <div className="w-full h-full bg-muted rounded-full" />
+                  </motion.div>
+                  <div className="w-80 h-80 mx-auto bg-muted rounded-full relative overflow-hidden">
+                    <img
+                      src="/pic.JPG"
+                      alt="Najm Adams"
+                      className="w-full h-full object-cover rounded-full"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary to-purple-600 opacity-10 rounded-full"></div>
+                  </div>
+                </div>
+              </Floating>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -378,49 +535,54 @@ export default function Portfolio() {
       <section id="skills" className="py-24 px-6 relative z-10" data-animate>
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2
-              className={`text-4xl md:text-5xl font-light mb-6 transition-all duration-1000 ${
-                visibleElements.has("skills")
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-10"
-              }`}>
+            <motion.h2
+              className="text-4xl md:text-5xl font-light mb-6"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={springConfigs.gentle}
+            >
               Skills & Expertise
-            </h2>
-            <div
-              className={`w-20 h-1 bg-primary mx-auto transition-all duration-1000 delay-300 ${
-                visibleElements.has("skills") ? "w-20" : "w-0"
-              }`}></div>
+            </motion.h2>
+            <motion.div
+              className="w-20 h-1 bg-primary mx-auto"
+              initial={{ width: 0 }}
+              whileInView={{ width: 80 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3, duration: 0.6 }}
+            />
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <StaggerContainer className="grid md:grid-cols-2 lg:grid-cols-4 gap-8" staggerDelay={0.1}>
             {skills.map((skill, index) => (
-              <Card
-                key={skill.name}
-                className={`group hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 hover:rotate-1 ${
-                  visibleElements.has("skills")
-                    ? "opacity-100 translate-y-0"
-                    : "opacity-0 translate-y-10"
-                }`}
-                style={{ transitionDelay: `${index * 100}ms` }}>
-                <CardContent className="p-8 text-center">
-                  <div className="mb-6 relative">
-                    <div className="w-16 h-16 mx-auto bg-primary/10 rounded-full flex items-center justify-center group-hover:bg-primary transition-all duration-300 group-hover:scale-110 group-hover:rotate-12">
-                      <skill.icon className="w-8 h-8 text-primary group-hover:text-primary-foreground transition-colors duration-300" />
-                    </div>
-                  </div>
-                  <h3 className="text-xl font-medium mb-4">{skill.name}</h3>
-                  <div className="w-full bg-muted rounded-full h-2 mb-2">
-                    <div
-                      className="bg-primary h-2 rounded-full transition-all duration-1000 ease-out animate-progress"
-                      style={{
-                        width: `${skill.level}%`,
-                        animationDelay: `${index * 200}ms`,
-                      }}></div>
-                  </div>
-                  <span className="text-sm text-muted-foreground">{skill.level}%</span>
-                </CardContent>
-              </Card>
+              <MotionItem key={skill.name} variant="cascade">
+                <motion.div
+                  whileHover={{ y: -8, rotate: 1 }}
+                  transition={springConfigs.bouncy}
+                >
+                  <Card className="group hover:shadow-xl transition-shadow duration-500">
+                    <CardContent className="p-8 text-center">
+                      <div className="mb-6 relative">
+                        <motion.div
+                          className="w-16 h-16 mx-auto bg-primary/10 rounded-full flex items-center justify-center group-hover:bg-primary transition-all duration-300"
+                          whileHover={{ scale: 1.1, rotate: 12 }}
+                          transition={springConfigs.bouncy}
+                        >
+                          <skill.icon className="w-8 h-8 text-primary group-hover:text-primary-foreground transition-colors duration-300" />
+                        </motion.div>
+                      </div>
+                      <h3 className="text-xl font-medium mb-4">{skill.name}</h3>
+                      <AnimatedProgress value={skill.level} delay={index * 0.2} />
+                      <AnimatedCounter
+                        value={skill.level}
+                        delay={index * 0.2 + 0.5}
+                        className="text-sm text-muted-foreground"
+                      />
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              </MotionItem>
             ))}
-          </div>
+          </StaggerContainer>
         </div>
       </section>
 
@@ -431,116 +593,79 @@ export default function Portfolio() {
         data-animate>
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2
-              className={`text-4xl md:text-5xl font-light mb-6 transition-all duration-1000 ${
-                visibleElements.has("projects")
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-10"
-              }`}>
+            <motion.h2
+              className="text-4xl md:text-5xl font-light mb-6"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={springConfigs.gentle}
+            >
               Featured Projects
-            </h2>
-            <div
-              className={`w-20 h-1 bg-primary mx-auto transition-all duration-1000 delay-300 ${
-                visibleElements.has("projects") ? "w-20" : "w-0"
-              }`}></div>
+            </motion.h2>
+            <motion.div
+              className="w-20 h-1 bg-primary mx-auto"
+              initial={{ width: 0 }}
+              whileInView={{ width: 80 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3, duration: 0.6 }}
+            />
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <StaggerContainer className="grid md:grid-cols-2 lg:grid-cols-3 gap-8" staggerDelay={0.15}>
             {projects.map((project, index) => (
-              <Card
-                key={project.title}
-                className={`group hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-4 hover:rotate-1 overflow-hidden ${
-                  visibleElements.has("projects")
-                    ? "opacity-100 translate-y-0"
-                    : "opacity-0 translate-y-10"
-                }`}
-                style={{ transitionDelay: `${index * 150}ms` }}>
-                <div className="h-48 relative overflow-hidden group-hover:scale-105 transition-transform duration-500">
-                  <img
-                    src={project.image || `https://picsum.photos/400/300?random=${index + 1}`}
-                    alt={project.title}
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-300"></div>
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <div className="flex space-x-2">
-                      <Link
-                        href={project.github}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="p-2 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-colors duration-300">
-                        <Github className="w-4 h-4 text-white" />
-                      </Link>
-                      {project.live && (
-                        <Link
-                          href={project.live}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="p-2 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-colors duration-300">
-                          <ExternalLink className="w-4 h-4 text-white" />
-                        </Link>
-                      )}
-                    </div>
-                  </div>
-                </div>
-                <CardContent className="p-6">
-                  <h3 className="text-xl font-semibold mb-3">
-                    {project.title}
-                  </h3>
-                  <p className="text-muted-foreground mb-4 leading-relaxed">
-                    {project.description}
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {project.tech.map((tech) => (
-                      <span
-                        key={tech}
-                        className="px-3 py-1 bg-primary/10 text-primary text-sm rounded-full">
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+              <MotionItem key={project.title} variant="flipIn">
+                <ProjectCard project={project} index={index} prefersReducedMotion={prefersReducedMotion} />
+              </MotionItem>
             ))}
-          </div>
+          </StaggerContainer>
         </div>
       </section>
 
       {/* Contact Section */}
       <section id="contact" className="py-24 px-6 relative z-10" data-animate>
         <div className="max-w-4xl mx-auto text-center">
-          <h2
-            className={`text-4xl md:text-5xl font-light mb-6 transition-all duration-1000 ${
-              visibleElements.has("contact")
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 translate-y-10"
-            }`}>
+          <motion.h2
+            className="text-4xl md:text-5xl font-light mb-6"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={springConfigs.gentle}
+          >
             Let's Work Together
-          </h2>
-          <div
-            className={`w-20 h-1 bg-primary mx-auto mb-12 transition-all duration-1000 delay-300 ${
-              visibleElements.has("contact") ? "w-20" : "w-0"
-            }`}></div>
-          <p
-            className={`text-xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed transition-all duration-1000 delay-500 ${
-              visibleElements.has("contact")
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 translate-y-10"
-            }`}>
+          </motion.h2>
+          <motion.div
+            className="w-20 h-1 bg-primary mx-auto mb-12"
+            initial={{ width: 0 }}
+            whileInView={{ width: 80 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3, duration: 0.6 }}
+          />
+          <motion.p
+            className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.4 }}
+          >
             I'm always interested in new opportunities and exciting projects.
             Let's discuss how we can bring your ideas to life.
-          </p>
+          </motion.p>
 
           {/* Contact Form */}
-          <form
+          <motion.form
             onSubmit={handleContactSubmit}
-            className={`max-w-2xl mx-auto mb-12 transition-all duration-1000 delay-700 ${
-              visibleElements.has("contact")
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 translate-y-10"
-            }`}>
+            className="max-w-2xl mx-auto mb-12"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.5 }}
+          >
             <div className="grid md:grid-cols-2 gap-6 mb-6">
-              <div>
+              <motion.div
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.6 }}
+              >
                 <Input
                   type="text"
                   name="name"
@@ -550,8 +675,13 @@ export default function Portfolio() {
                   required
                   className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300"
                 />
-              </div>
-              <div>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, x: 30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.7 }}
+              >
                 <Input
                   type="email"
                   name="email"
@@ -561,9 +691,15 @@ export default function Portfolio() {
                   required
                   className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300"
                 />
-              </div>
+              </motion.div>
             </div>
-            <div className="mb-6">
+            <motion.div
+              className="mb-6"
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.8 }}
+            >
               <Input
                 type="text"
                 name="subject"
@@ -573,8 +709,14 @@ export default function Portfolio() {
                 required
                 className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300"
               />
-            </div>
-            <div className="mb-6">
+            </motion.div>
+            <motion.div
+              className="mb-6"
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.9 }}
+            >
               <Textarea
                 name="message"
                 placeholder="Your Message"
@@ -584,67 +726,199 @@ export default function Portfolio() {
                 rows={6}
                 className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300 resize-none"
               />
-            </div>
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full md:w-auto px-8 py-4 text-lg bg-primary hover:bg-primary/90 disabled:bg-primary/60 text-primary-foreground transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-primary/25">
-              {isSubmitting ? (
-                <>
-                  <div className="w-5 h-5 mr-2 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  Sending...
-                </>
-              ) : (
-                <>
-                  <Send className="w-5 h-5 mr-2" />
-                  Send Message
-                </>
-              )}
-            </Button>
-          </form>
+            </motion.div>
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              whileTap={tapAnimation}
+            >
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full md:w-auto px-8 py-4 text-lg bg-primary hover:bg-primary/90 disabled:bg-primary/60 text-primary-foreground transition-all duration-300 hover:shadow-lg hover:shadow-primary/25 ripple-effect">
+                {isSubmitting ? (
+                  <>
+                    <motion.div
+                      className="w-5 h-5 mr-2 border-2 border-white border-t-transparent rounded-full"
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                    />
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    <motion.div
+                      animate={isSendAnimating ? { x: 50, y: -50, opacity: 0, rotate: 45 } : {}}
+                      transition={{ duration: 0.5 }}
+                    >
+                      <Send className="w-5 h-5 mr-2" />
+                    </motion.div>
+                    Send Message
+                  </>
+                )}
+              </Button>
+            </motion.div>
+          </motion.form>
 
           {/* Alternative Contact Options */}
-          <div
-            className={`flex flex-col sm:flex-row gap-6 justify-center transition-all duration-1000 delay-900 ${
-              visibleElements.has("contact")
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 translate-y-10"
-            }`}>
-            <Button
-              variant="outline"
-              className="px-8 py-4 text-lg border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 transform hover:scale-105 hover:shadow-lg bg-transparent"
-              onClick={() =>
-                window.open("mailto:najmadams1706@gmail.com", "_blank")
-              }>
-              <Mail className="w-5 h-5 mr-2" />
-              Direct Email
-            </Button>
-            <Button
-              variant="outline"
-              className="px-8 py-4 text-lg border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 transform hover:scale-105 hover:shadow-lg bg-transparent"
-              onClick={() => {
-                const link = document.createElement("a");
-                link.href = "/NajmAdamsResume.pdf";
-                link.download = "NajmAdamsResume.pdf";
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-              }}>
-              Download Resume
-            </Button>
-          </div>
+          <motion.div
+            className="flex flex-col sm:flex-row gap-6 justify-center"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 1 }}
+          >
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={tapAnimation}>
+              <Button
+                variant="outline"
+                className="px-8 py-4 text-lg border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 hover:shadow-lg bg-transparent ripple-effect"
+                onClick={() =>
+                  window.open("mailto:najmadams1706@gmail.com", "_blank")
+                }>
+                <Mail className="w-5 h-5 mr-2" />
+                Direct Email
+              </Button>
+            </motion.div>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={tapAnimation}>
+              <Button
+                variant="outline"
+                className="px-8 py-4 text-lg border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 hover:shadow-lg bg-transparent ripple-effect"
+                onClick={() => {
+                  const link = document.createElement("a");
+                  link.href = "/NajmAdamsResume.pdf";
+                  link.download = "NajmAdamsResume.pdf";
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+                }}>
+                Download Resume
+              </Button>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-12 px-6 bg-card border-t border-border">
+      <motion.footer
+        className="py-12 px-6 bg-card border-t border-border"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+      >
         <div className="max-w-6xl mx-auto text-center">
-          <p className="text-muted-foreground">
-            © {new Date().getFullYear()} Najm Adams. Crafted with passion and
-            precision.
+          <p className="text-muted-foreground flex items-center justify-center gap-1">
+            © {new Date().getFullYear()} Najm Adams. Crafted with
+            <motion.span
+              animate={prefersReducedMotion ? {} : {
+                scale: [1, 1.2, 1, 1.2, 1],
+              }}
+              transition={{
+                duration: 1.5,
+                repeat: Infinity,
+                repeatDelay: 2,
+              }}
+            >
+              <Heart className="w-4 h-4 text-red-500 fill-red-500 inline" />
+            </motion.span>
+            and precision.
           </p>
         </div>
-      </footer>
+      </motion.footer>
     </div>
   );
+}
+
+// Separate ProjectCard component for better organization and tilt effect
+interface ProjectCardProps {
+  project: {
+    title: string
+    description: string
+    image?: string
+    github: string
+    live?: string
+    tech: string[]
+  }
+  index: number
+  prefersReducedMotion: boolean
+}
+
+function ProjectCard({ project, index, prefersReducedMotion }: ProjectCardProps) {
+  const cardRef = useRef<HTMLDivElement>(null)
+  const tiltStyle = useTilt(cardRef, { maxTilt: 8, scale: 1.02 })
+  const [isHovered, setIsHovered] = useState(false)
+
+  return (
+    <motion.div
+      ref={cardRef}
+      style={prefersReducedMotion ? {} : tiltStyle}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <Card className="group overflow-hidden h-full">
+        <div className="h-48 relative overflow-hidden">
+          <motion.img
+            src={project.image || `https://picsum.photos/400/300?random=${index + 1}`}
+            alt={project.title}
+            className="w-full h-full object-cover"
+            loading="lazy"
+            animate={isHovered && !prefersReducedMotion ? { scale: 1.1 } : { scale: 1 }}
+            transition={{ duration: 0.4 }}
+          />
+          <motion.div
+            className="absolute inset-0 bg-black/20"
+            animate={isHovered ? { opacity: 0.1 } : { opacity: 0.2 }}
+            transition={{ duration: 0.3 }}
+          />
+          <motion.div
+            className="absolute bottom-4 left-4 right-4 flex space-x-2"
+            initial={{ y: 20, opacity: 0 }}
+            animate={isHovered ? { y: 0, opacity: 1 } : { y: 20, opacity: 0 }}
+            transition={springConfigs.bouncy}
+          >
+            <motion.a
+              href={project.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-colors duration-300"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+            >
+              <Github className="w-4 h-4 text-white" />
+            </motion.a>
+            {project.live && (
+              <motion.a
+                href={project.live}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-colors duration-300"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <ExternalLink className="w-4 h-4 text-white" />
+              </motion.a>
+            )}
+          </motion.div>
+        </div>
+        <CardContent className="p-6">
+          <h3 className="text-xl font-semibold mb-3">
+            {project.title}
+          </h3>
+          <p className="text-muted-foreground mb-4 leading-relaxed">
+            {project.description}
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {project.tech.map((tech, techIndex) => (
+              <AnimatedTechTag
+                key={tech}
+                index={techIndex}
+                className="px-3 py-1 bg-primary/10 text-primary text-sm rounded-full cursor-default"
+              >
+                {tech}
+              </AnimatedTechTag>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    </motion.div>
+  )
 }

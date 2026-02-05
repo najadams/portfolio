@@ -208,3 +208,382 @@
     border-color: currentColor;
   }
 }
+
+/* Playful Animations */
+
+/* Jelly - squish/stretch effect */
+@keyframes jelly {
+  0%, 100% {
+    transform: scale(1, 1);
+  }
+  25% {
+    transform: scale(0.9, 1.1);
+  }
+  50% {
+    transform: scale(1.1, 0.9);
+  }
+  75% {
+    transform: scale(0.95, 1.05);
+  }
+}
+
+.animate-jelly {
+  animation: jelly 0.5s ease-in-out;
+}
+
+/* Wiggle - rotation wobble */
+@keyframes wiggle {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-10deg);
+  }
+  50% {
+    transform: rotate(10deg);
+  }
+  75% {
+    transform: rotate(-5deg);
+  }
+}
+
+.animate-wiggle {
+  animation: wiggle 0.5s ease-in-out;
+}
+
+/* PopIn - scale overshoot entrance */
+@keyframes popIn {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-pop-in {
+  animation: popIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+  opacity: 0;
+}
+
+/* RubberBand - elastic bounce */
+@keyframes rubberBand {
+  0% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scaleX(1.25) scaleY(0.75);
+  }
+  40% {
+    transform: scaleX(0.75) scaleY(1.25);
+  }
+  50% {
+    transform: scaleX(1.15) scaleY(0.85);
+  }
+  65% {
+    transform: scaleX(0.95) scaleY(1.05);
+  }
+  75% {
+    transform: scaleX(1.05) scaleY(0.95);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animate-rubber-band {
+  animation: rubberBand 0.8s ease-in-out;
+}
+
+/* Heartbeat - pulsing effect */
+@keyframes heartbeat {
+  0%, 100% {
+    transform: scale(1);
+  }
+  14% {
+    transform: scale(1.15);
+  }
+  28% {
+    transform: scale(1);
+  }
+  42% {
+    transform: scale(1.15);
+  }
+  70% {
+    transform: scale(1);
+  }
+}
+
+.animate-heartbeat {
+  animation: heartbeat 1.3s ease-in-out infinite;
+}
+
+/* Gradient Rotate - rotating gradient border */
+@keyframes gradientRotate {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-gradient-rotate {
+  background: linear-gradient(270deg, hsl(var(--primary)), #9333ea, #ec4899, hsl(var(--primary)));
+  background-size: 400% 400%;
+  animation: gradientRotate 4s ease infinite;
+}
+
+/* Wave Shimmer - progress bar shimmer */
+@keyframes waveShimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-wave-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.animate-wave-shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  animation: waveShimmer 2s infinite;
+}
+
+/* Spin with bounce */
+@keyframes spinBounce {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.1);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+.hover-spin-bounce:hover {
+  animation: spinBounce 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* Tilt wiggle for mail icon */
+@keyframes tiltWiggle {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  20% {
+    transform: rotate(-15deg);
+  }
+  40% {
+    transform: rotate(15deg);
+  }
+  60% {
+    transform: rotate(-10deg);
+  }
+  80% {
+    transform: rotate(10deg);
+  }
+}
+
+.hover-tilt-wiggle:hover {
+  animation: tiltWiggle 0.5s ease-in-out;
+}
+
+/* Elastic underline */
+.elastic-underline {
+  position: relative;
+}
+
+.elastic-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: hsl(var(--primary));
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  transform: translateX(-50%);
+}
+
+.elastic-underline:hover::after {
+  width: 100%;
+}
+
+/* Slide in from sides */
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.5s ease-out forwards;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.5s ease-out forwards;
+}
+
+/* 3D Flip */
+@keyframes flipIn {
+  0% {
+    opacity: 0;
+    transform: perspective(1000px) rotateY(-90deg);
+  }
+  100% {
+    opacity: 1;
+    transform: perspective(1000px) rotateY(0deg);
+  }
+}
+
+.animate-flip-in {
+  animation: flipIn 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+/* Cascade diagonal entrance */
+@keyframes cascadeDiagonal {
+  from {
+    opacity: 0;
+    transform: translate(-30px, 30px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+}
+
+.animate-cascade-diagonal {
+  animation: cascadeDiagonal 0.5s ease-out forwards;
+  opacity: 0;
+}
+
+/* Button press effect */
+.press-effect {
+  transition: transform 0.1s ease;
+}
+
+.press-effect:active {
+  transform: scale(0.95);
+}
+
+/* Ripple effect */
+.ripple-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple-effect::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+}
+
+.ripple-effect:active::before {
+  width: 300px;
+  height: 300px;
+}
+
+/* Send icon fly off */
+@keyframes flyOff {
+  0% {
+    transform: translateX(0) translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(50px) translateY(-50px) rotate(45deg);
+    opacity: 0;
+  }
+}
+
+.animate-fly-off {
+  animation: flyOff 0.5s ease-out forwards;
+}
+
+/* Tag glow on hover */
+.tag-glow {
+  transition: all 0.3s ease;
+}
+
+.tag-glow:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 15px hsl(var(--primary) / 0.5);
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .animate-jelly,
+  .animate-wiggle,
+  .animate-pop-in,
+  .animate-rubber-band,
+  .animate-heartbeat,
+  .animate-gradient-rotate,
+  .animate-wave-shimmer,
+  .animate-wave-shimmer::after,
+  .hover-spin-bounce:hover,
+  .hover-tilt-wiggle:hover,
+  .animate-slide-in-left,
+  .animate-slide-in-right,
+  .animate-flip-in,
+  .animate-cascade-diagonal,
+  .animate-fly-off {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .elastic-underline::after {
+    transition: none;
+  }
+}
