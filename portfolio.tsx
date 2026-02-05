@@ -7,6 +7,9 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Github, Linkedin, Mail, ExternalLink, Code, Database, Globe, Smartphone, Send } from "lucide-react"
 import Link from "next/link"
+import { ThemeToggle } from "@/components/theme-toggle"
+import { IntroModal } from "@/components/IntroModal"
+import { projects } from "@/data/projects"
 
 export default function Portfolio() {
   const [isVisible, setIsVisible] = useState(false)
@@ -138,63 +141,18 @@ export default function Portfolio() {
     { name: "DevOps & Cloud", icon: Code, level: 80 },
   ]
 
-  const projects = [
-    {
-      title:
-        "A simple donations platform flavoured with the arts of young talents",
-      description: "Modern UI used for donation hub.",
-      tech: ["React", "stripe", "formik", "chakra ui", "Cloudinary"],
-      github: "https://github.com/najadams/chat-app",
-      live: "https://najsdonation.netlify.app",
-    },
-    {
-      title: "Full-Stack POS Platform",
-      description:
-        "Comprehensive e-commerce solution with user authentication, payment processing, and admin dashboard",
-      tech: ["React", "Node.js", "MongoDB", "JWT"],
-      github: "https://github.com/najadams/sophon.git",
-      live: "https://mannos.netlify.app",
-    },
-    {
-      title: "Portfolio Website",
-      description:
-        "Responsive portfolio website showcasing projects and skills with modern design and animations",
-      tech: ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion"],
-      github: "https://github.com/najadams/portfolio",
-      live: "https://najs.netlify.app",
-    },
-    {
-      title: "AI enhanced Audio Steganography",
-      description:
-        "A collaborative work on reinforcement learning. Functional audio ai audio steganography and steganalysis tool.",
-      tech: ["React.js", "TypeScript", " Python", "Gymnasium PPO Agent"],
-      github: "https://github.com/najadams/blog-platform",
-    },
-    {
-      title: "Offline first POS applicaiton",
-      description:
-        "A comprehensive pos application, effortlessly seamless with the working environment of wholesalers and distributers. Precise inventory tracking. Apt use of sms for CRM",
-      tech: ["React", "Chart.js", "Electron", "Material-UI"],
-      github: "https://github.com/najadams/pos",
-    },
-    {
-      title: "AI Integrated mobile health assistant",
-      description:
-        "Ai integrated mental health assistant with up to date resources. Impeccable at keeping track of patient health",
-      tech: ["React Native", "Javascript", "mongoDB", "Tailwind CSS"],
-      github: "https://github.com/najadams/MentalHealthM_App",
-    },
-  ];
-
   return (
-    <div className="min-h-screen bg-white text-gray-900 relative overflow-hidden">
+    <div className="min-h-screen bg-background text-foreground relative overflow-hidden">
+      {/* Intro Modal */}
+      <IntroModal />
+
       {/* Animated Background Elements */}
       <div className="fixed inset-0 pointer-events-none z-0">
         {/* Floating Particles */}
         {[...Array(20)].map((_, i) => (
           <div
             key={i}
-            className="absolute w-2 h-2 bg-blue-400 rounded-full opacity-20 animate-pulse"
+            className="absolute w-2 h-2 bg-primary rounded-full opacity-20 animate-pulse"
             style={{
               left: `${(i * 5) % 100}%`,
               top: `${(i * 7) % 100}%`,
@@ -210,10 +168,10 @@ export default function Portfolio() {
           className="absolute w-4 h-4 pointer-events-none transition-transform duration-100 ease-out"
           style={{
             background:
-              "radial-gradient(circle, rgba(59, 130, 246, 0.8) 0%, rgba(59, 130, 246, 0.4) 30%, transparent 70%)",
+              "radial-gradient(circle, hsl(var(--primary) / 0.8) 0%, hsl(var(--primary) / 0.4) 30%, transparent 70%)",
             filter: "blur(2px)",
             boxShadow:
-              "0 0 20px rgba(59, 130, 246, 0.6), 0 0 40px rgba(59, 130, 246, 0.4)",
+              "0 0 20px hsl(var(--primary) / 0.6), 0 0 40px hsl(var(--primary) / 0.4)",
           }}
         />
 
@@ -230,32 +188,35 @@ export default function Portfolio() {
         />
 
         {/* Gradient Orbs */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse" />
         <div
-          className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse"
+          className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse"
           style={{ animationDelay: "1s" }}
         />
       </div>
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 transition-all duration-300 hover:bg-white/90">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border transition-all duration-300 hover:bg-background/90">
         <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
-            <div className="text-xl font-bold text-blue-600">Najm Adams</div>
-            <div className="hidden md:flex space-x-8">
-              {["home", "about", "skills", "projects", "contact"].map(
-                (section) => (
-                  <button
-                    key={section}
-                    onClick={() => scrollToSection(section)}
-                    className={`capitalize transition-all duration-300 hover:scale-110 ${
-                      activeSection === section
-                        ? "text-blue-600 font-medium transform scale-110"
-                        : "text-gray-600 hover:text-gray-900"
-                    }`}>
-                    {section}
-                  </button>
-                )
-              )}
+            <div className="text-xl font-bold text-primary">Najm Adams</div>
+            <div className="flex items-center">
+              <div className="hidden md:flex items-center space-x-8">
+                {["home", "about", "skills", "projects", "contact"].map(
+                  (section) => (
+                    <button
+                      key={section}
+                      onClick={() => scrollToSection(section)}
+                      className={`capitalize transition-all duration-300 hover:scale-110 ${
+                        activeSection === section
+                          ? "text-primary font-medium transform scale-110"
+                          : "text-muted-foreground hover:text-foreground"
+                      }`}>
+                      {section}
+                    </button>
+                  )
+                )}
+              </div>
+              <ThemeToggle />
             </div>
           </div>
         </div>
@@ -313,10 +274,10 @@ export default function Portfolio() {
                 style={{ animationDelay: "0.8s" }}>
                 e
               </span>
-              <span className="block text-blue-600 font-medium">Developer</span>
+              <span className="block text-primary font-medium">Developer</span>
             </h1>
             <p
-              className="text-xl md:text-2xl text-gray-600 mb-12 max-w-2xl mx-auto leading-relaxed animate-fade-in-up"
+              className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed animate-fade-in-up"
               style={{ animationDelay: "0.5s" }}>
               Crafting digital experiences with clean code and innovative
               solutions
@@ -326,13 +287,13 @@ export default function Portfolio() {
               style={{ animationDelay: "0.8s" }}>
               <Button
                 onClick={() => scrollToSection("projects")}
-                className="px-8 py-3 text-lg bg-blue-600 hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-blue-500/25">
+                className="px-8 py-3 text-lg bg-primary hover:bg-primary/90 text-primary-foreground transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-primary/25">
                 View My Work
               </Button>
               <Button
                 variant="outline"
                 onClick={() => scrollToSection("contact")}
-                className="px-8 py-3 text-lg border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
+                className="px-8 py-3 text-lg border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
                 Get In Touch
               </Button>
             </div>
@@ -343,7 +304,7 @@ export default function Portfolio() {
       {/* About Section */}
       <section
         id="about"
-        className="py-24 px-6 bg-gray-50 relative z-10"
+        className="py-24 px-6 bg-muted relative z-10"
         data-animate>
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-16">
@@ -356,19 +317,19 @@ export default function Portfolio() {
               About Me
             </h2>
             <div
-              className={`w-20 h-1 bg-blue-600 mx-auto transition-all duration-1000 delay-300 ${
+              className={`w-20 h-1 bg-primary mx-auto transition-all duration-1000 delay-300 ${
                 visibleElements.has("about") ? "w-20" : "w-0"
               }`}></div>
           </div>
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="space-y-6 animate-fade-in-left">
-              <p className="text-lg text-gray-700 leading-relaxed">
+              <p className="text-lg text-muted-foreground leading-relaxed">
                 I'm a passionate full-stack developer with expertise in building
                 modern web applications and scalable solutions. I specialize in
                 React, Next.js, Node.js, and cloud technologies, with a focus on
                 creating exceptional user experiences.
               </p>
-              <p className="text-lg text-gray-700 leading-relaxed">
+              <p className="text-lg text-muted-foreground leading-relaxed">
                 When I'm not coding, you'll find me exploring new technologies,
                 contributing to open source projects, and continuously learning
                 to stay at the forefront of web development trends and best
@@ -379,34 +340,34 @@ export default function Portfolio() {
                   href="https://github.com/najadams"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-3 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-110">
-                  <Github className="w-6 h-6 text-gray-700" />
+                  className="p-3 bg-background rounded-full shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-110">
+                  <Github className="w-6 h-6 text-muted-foreground" />
                 </Link>
                 <Link
                   href="https://www.linkedin.com/in/najm-lambon-a11480234/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-3 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-110">
-                  <Linkedin className="w-6 h-6 text-gray-700" />
+                  className="p-3 bg-background rounded-full shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-110">
+                  <Linkedin className="w-6 h-6 text-muted-foreground" />
                 </Link>
                 <Link
                   href="mailto:najmadams1706@gmail.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-3 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-110">
-                  <Mail className="w-6 h-6 text-gray-700" />
+                  className="p-3 bg-background rounded-full shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-110">
+                  <Mail className="w-6 h-6 text-muted-foreground" />
                 </Link>
               </div>
             </div>
             <div className="relative animate-fade-in-right">
-              <div className="w-80 h-80 mx-auto bg-gradient-to-br from-blue-400 to-purple-600 rounded-full opacity-20 absolute -top-4 -left-4"></div>
-              <div className="w-80 h-80 mx-auto bg-gray-200 rounded-full relative overflow-hidden">
+              <div className="w-80 h-80 mx-auto bg-gradient-to-br from-primary to-purple-600 rounded-full opacity-20 absolute -top-4 -left-4"></div>
+              <div className="w-80 h-80 mx-auto bg-muted rounded-full relative overflow-hidden">
                 <img
                   src="/pic.JPG"
                   alt="Najm Adams"
                   className="w-full h-full object-cover rounded-full"
                 />
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-purple-600 opacity-10 rounded-full"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-primary to-purple-600 opacity-10 rounded-full"></div>
               </div>
             </div>
           </div>
@@ -426,7 +387,7 @@ export default function Portfolio() {
               Skills & Expertise
             </h2>
             <div
-              className={`w-20 h-1 bg-blue-600 mx-auto transition-all duration-1000 delay-300 ${
+              className={`w-20 h-1 bg-primary mx-auto transition-all duration-1000 delay-300 ${
                 visibleElements.has("skills") ? "w-20" : "w-0"
               }`}></div>
           </div>
@@ -442,20 +403,20 @@ export default function Portfolio() {
                 style={{ transitionDelay: `${index * 100}ms` }}>
                 <CardContent className="p-8 text-center">
                   <div className="mb-6 relative">
-                    <div className="w-16 h-16 mx-auto bg-blue-100 rounded-full flex items-center justify-center group-hover:bg-blue-600 transition-all duration-300 group-hover:scale-110 group-hover:rotate-12">
-                      <skill.icon className="w-8 h-8 text-blue-600 group-hover:text-white transition-colors duration-300" />
+                    <div className="w-16 h-16 mx-auto bg-primary/10 rounded-full flex items-center justify-center group-hover:bg-primary transition-all duration-300 group-hover:scale-110 group-hover:rotate-12">
+                      <skill.icon className="w-8 h-8 text-primary group-hover:text-primary-foreground transition-colors duration-300" />
                     </div>
                   </div>
                   <h3 className="text-xl font-medium mb-4">{skill.name}</h3>
-                  <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
+                  <div className="w-full bg-muted rounded-full h-2 mb-2">
                     <div
-                      className="bg-blue-600 h-2 rounded-full transition-all duration-1000 ease-out animate-progress"
+                      className="bg-primary h-2 rounded-full transition-all duration-1000 ease-out animate-progress"
                       style={{
                         width: `${skill.level}%`,
                         animationDelay: `${index * 200}ms`,
                       }}></div>
                   </div>
-                  <span className="text-sm text-gray-600">{skill.level}%</span>
+                  <span className="text-sm text-muted-foreground">{skill.level}%</span>
                 </CardContent>
               </Card>
             ))}
@@ -466,7 +427,7 @@ export default function Portfolio() {
       {/* Projects Section */}
       <section
         id="projects"
-        className="py-24 px-6 bg-gray-50 relative z-10"
+        className="py-24 px-6 bg-muted relative z-10"
         data-animate>
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
@@ -479,7 +440,7 @@ export default function Portfolio() {
               Featured Projects
             </h2>
             <div
-              className={`w-20 h-1 bg-blue-600 mx-auto transition-all duration-1000 delay-300 ${
+              className={`w-20 h-1 bg-primary mx-auto transition-all duration-1000 delay-300 ${
                 visibleElements.has("projects") ? "w-20" : "w-0"
               }`}></div>
           </div>
@@ -495,20 +456,7 @@ export default function Portfolio() {
                 style={{ transitionDelay: `${index * 150}ms` }}>
                 <div className="h-48 relative overflow-hidden group-hover:scale-105 transition-transform duration-500">
                   <img
-                    src={
-                      project.title === "Full-Stack POS Platform"
-                        ? "/POS.png"
-                        : project.title === "Offline first POS applicaiton"
-                        ? "/offlinePOS.png"
-                        : project.title ==
-                          "A simple donations platform flavoured with the arts of young talents"
-                        ? "/orphans.png"
-                        : project.title === "AI enhanced Audio Steganography"
-                        ? "/steganography.png"
-                        : project.title === "Portfolio Website"
-                        ? "/portfolio.png"
-                        : `https://picsum.photos/400/300?random=${index + 1}`
-                    }
+                    src={project.image || `https://picsum.photos/400/300?random=${index + 1}`}
                     alt={project.title}
                     className="w-full h-full object-cover"
                     loading="lazy"
@@ -539,14 +487,14 @@ export default function Portfolio() {
                   <h3 className="text-xl font-semibold mb-3">
                     {project.title}
                   </h3>
-                  <p className="text-gray-600 mb-4 leading-relaxed">
+                  <p className="text-muted-foreground mb-4 leading-relaxed">
                     {project.description}
                   </p>
                   <div className="flex flex-wrap gap-2">
                     {project.tech.map((tech) => (
                       <span
                         key={tech}
-                        className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full">
+                        className="px-3 py-1 bg-primary/10 text-primary text-sm rounded-full">
                         {tech}
                       </span>
                     ))}
@@ -570,11 +518,11 @@ export default function Portfolio() {
             Let's Work Together
           </h2>
           <div
-            className={`w-20 h-1 bg-blue-600 mx-auto mb-12 transition-all duration-1000 delay-300 ${
+            className={`w-20 h-1 bg-primary mx-auto mb-12 transition-all duration-1000 delay-300 ${
               visibleElements.has("contact") ? "w-20" : "w-0"
             }`}></div>
           <p
-            className={`text-xl text-gray-600 mb-12 max-w-2xl mx-auto leading-relaxed transition-all duration-1000 delay-500 ${
+            className={`text-xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed transition-all duration-1000 delay-500 ${
               visibleElements.has("contact")
                 ? "opacity-100 translate-y-0"
                 : "opacity-0 translate-y-10"
@@ -600,7 +548,7 @@ export default function Portfolio() {
                   value={contactForm.name}
                   onChange={handleContactFormChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                  className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300"
                 />
               </div>
               <div>
@@ -611,7 +559,7 @@ export default function Portfolio() {
                   value={contactForm.email}
                   onChange={handleContactFormChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                  className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300"
                 />
               </div>
             </div>
@@ -623,7 +571,7 @@ export default function Portfolio() {
                 value={contactForm.subject}
                 onChange={handleContactFormChange}
                 required
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300"
               />
             </div>
             <div className="mb-6">
@@ -634,13 +582,13 @@ export default function Portfolio() {
                 onChange={handleContactFormChange}
                 required
                 rows={6}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 resize-none"
+                className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300 resize-none"
               />
             </div>
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="w-full md:w-auto px-8 py-4 text-lg bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-blue-500/25">
+              className="w-full md:w-auto px-8 py-4 text-lg bg-primary hover:bg-primary/90 disabled:bg-primary/60 text-primary-foreground transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-primary/25">
               {isSubmitting ? (
                 <>
                   <div className="w-5 h-5 mr-2 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -664,7 +612,7 @@ export default function Portfolio() {
             }`}>
             <Button
               variant="outline"
-              className="px-8 py-4 text-lg border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white transition-all duration-300 transform hover:scale-105 hover:shadow-lg bg-transparent"
+              className="px-8 py-4 text-lg border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 transform hover:scale-105 hover:shadow-lg bg-transparent"
               onClick={() =>
                 window.open("mailto:najmadams1706@gmail.com", "_blank")
               }>
@@ -673,7 +621,7 @@ export default function Portfolio() {
             </Button>
             <Button
               variant="outline"
-              className="px-8 py-4 text-lg border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white transition-all duration-300 transform hover:scale-105 hover:shadow-lg bg-transparent"
+              className="px-8 py-4 text-lg border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300 transform hover:scale-105 hover:shadow-lg bg-transparent"
               onClick={() => {
                 const link = document.createElement("a");
                 link.href = "/NajmAdamsResume.pdf";
@@ -689,9 +637,9 @@ export default function Portfolio() {
       </section>
 
       {/* Footer */}
-      <footer className="py-12 px-6 bg-gray-900 text-white">
+      <footer className="py-12 px-6 bg-card border-t border-border">
         <div className="max-w-6xl mx-auto text-center">
-          <p className="text-gray-400">
+          <p className="text-muted-foreground">
             © {new Date().getFullYear()} Najm Adams. Crafted with passion and
             precision.
           </p>
